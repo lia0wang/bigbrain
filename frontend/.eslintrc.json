@@ -6,7 +6,7 @@
         "jest": true
     },
     "extends": ["eslint:recommended", "plugin:react/recommended", "standard"],
-    "parser": "@babel/eslint-parser",
+    "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaFeatures": {
             "jsx": true
