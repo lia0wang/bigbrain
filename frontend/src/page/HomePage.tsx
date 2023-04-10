@@ -17,7 +17,7 @@ const HomePage: React.FC = () => {
     setLoading(true);
     const token = localStorage.getItem('u_token');
     await apiRequest('POST', '/admin/auth/logout', {}, token)
-      .then(res => {
+      .then((res) => {
         localStorage.removeItem('u_token');
         navigate('/login');
       })
@@ -30,15 +30,15 @@ const HomePage: React.FC = () => {
 
   return (
     <>
-    <div className="flex flex-col justify-center items-center mt-[10%]">
-      <Button
-        className="w-[80%] h-[55px]"
-        onClick={() => logout()}
-        variant="contained"
-      >
-        Logout
-      </Button>
-    </div>
+      <div className="flex flex-col justify-center items-center mt-[10%]">
+        <Button
+          className="w-[80%] h-[55px]"
+          onClick={() => logout()}
+          variant="contained"
+        >
+          Logout
+        </Button>
+      </div>
     </>
   );
 };

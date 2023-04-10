@@ -8,18 +8,33 @@ import AuthPassword from '../../component/auth/AuthPassword';
 import AuthButton from '../../component/auth/AuthButton';
 import AuthNavigator from '../../component/auth/AuthNavigator';
 import AuthName from '../../component/auth/AuthName';
+import { isMobileWidth, isDesktopWidth } from '../../util/media';
 
 const RegisterPage: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
+  const [deviceType, setDeviceType] = useState('');
+
   const navigate = useNavigate();
 
   useEffect(() => {
     return () => {
       setLoading(false); // cancel any running tasks
     };
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (isMobileWidth()) setDeviceType('mobile');
+      else if (isDesktopWidth()) setDeviceType('desktop');
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
   }, []);
 
   const register = async (email: string, password: string, name: string) => {
@@ -30,7 +45,7 @@ const RegisterPage: React.FC = () => {
       name,
     };
     await apiRequest('POST', '/admin/auth/register', payload)
-      .then(res => {
+      .then((res) => {
         const token = res.token;
         if (token) {
           localStorage.setItem('u_token', token);
@@ -46,20 +61,28 @@ const RegisterPage: React.FC = () => {
 
   return (
     <>
-     <div className="text-black">
-        <AuthIcon />
-        <AuthTitle title="Sign Up" />
-        <div className="flex flex-col justify-center items-center mt-[10%]">
-          <AuthEmail email={email} setEmail={setEmail} />
-          <span className="my-[4%]" />
-          <AuthPassword password={password} setPassword={setPassword} />
-          <span className="my-[4%]" />
-          <AuthName name={name} setName={setName} />
-          <span className="my-[4%]" />
-          <AuthButton fn={register} email={email} password={password} innerText="Register" />
+      {deviceType === 'mobile' && (
+        <div className="text-black">
+          <AuthIcon />
+          <AuthTitle title="Sign Up" />
+          <div className="flex flex-col justify-center items-center mt-[10%]">
+            <AuthEmail email={email} setEmail={setEmail} />
+            <span className="my-[4%]" />
+            <AuthPassword password={password} setPassword={setPassword} />
+            <span className="my-[4%]" />
+            <AuthName name={name} setName={setName} />
+            <span className="my-[4%]" />
+            <AuthButton
+              fn={register}
+              email={email}
+              password={password}
+              innerText="Register"
+            />
+          </div>
+          <AuthNavigator navPath="/login" navText="Login" navigate={navigate} />
         </div>
-        <AuthNavigator navPath="/login" navText="Login" navigate={navigate} />
-      </div>
+      )}
+      {deviceType === 'desktop' && <p>TODO: Desktop</p>}
     </>
   );
 };

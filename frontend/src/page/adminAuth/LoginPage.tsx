@@ -26,12 +26,9 @@ const LoginPage: React.FC = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      if (isMobileWidth()) {
-        setDeviceType('mobile');
-      } else if (isDesktopWidth()) {
-        setDeviceType('desktop');
-      }
-    }
+      if (isMobileWidth()) setDeviceType('mobile');
+      else if (isDesktopWidth()) setDeviceType('desktop');
+    };
 
     handleResize();
     window.addEventListener('resize', handleResize);

@@ -1,10 +1,10 @@
 import React from 'react';
 
-const AuthNavigator: React.FC<{ navPath: string; navText: string; navigate: any }> = ({
-  navPath,
-  navText,
-  navigate,
-}) => {
+const AuthNavigator: React.FC<{
+  navPath: string;
+  navText: string;
+  navigate: any;
+}> = ({ navPath, navText, navigate }) => {
   return (
     <div className="flex flex-col mt-[4%] ml-[10%]">
       <p className="text-sm font-normal text-gray-600">

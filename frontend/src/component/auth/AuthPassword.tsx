@@ -7,7 +7,10 @@ import IconButton from '@mui/material/IconButton';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
-const AuthPassword: React.FC<{ password: string; setPassword: any }> = ({ password, setPassword }) => {
+const AuthPassword: React.FC<{ password: string; setPassword: any }> = ({
+  password,
+  setPassword,
+}) => {
   const [showPassword, setShowPassword] = React.useState(false);
 
   const handleClickShowPassword = () => setShowPassword((show) => !show);

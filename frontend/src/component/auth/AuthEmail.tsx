@@ -3,7 +3,10 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import OutlinedInput from '@mui/material/OutlinedInput';
 
-const AuthEmail: React.FC<{ email: string; setEmail: (email: string) => void }> = ({ email, setEmail }) => {
+const AuthEmail: React.FC<{
+  email: string;
+  setEmail: (email: string) => void;
+}> = ({ email, setEmail }) => {
   return (
     <FormControl className="w-[80%]" variant="outlined">
       <InputLabel htmlFor="email">Email</InputLabel>
