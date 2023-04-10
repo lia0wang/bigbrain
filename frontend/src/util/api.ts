@@ -27,8 +27,8 @@ const apiRequest = async (
   const instance = axios.create({
     baseURL: API_PATH,
     headers: {
-      'Content-Type': 'application/json'
-    }
+      'Content-Type': 'application/json',
+    },
   });
 
   // Add an interceptor to handle errors
@@ -39,8 +39,9 @@ const apiRequest = async (
         error.response = {
           data: {
             ok: false,
-            error: 'Could not connect to server. Is your internet connection ok?'
-          }
+            error:
+              'Could not connect to server. Is your internet connection ok?',
+          },
         };
       } else if (error.response.status >= 400) {
         error.response.data.ok = false;
@@ -59,7 +60,7 @@ const apiRequest = async (
     const response: AxiosResponse = await instance({
       method,
       url: path,
-      data
+      data,
     });
     response.data.ok = true;
     return response.data;
