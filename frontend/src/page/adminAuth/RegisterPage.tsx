@@ -10,6 +10,7 @@ import AuthNavigator from '../../component/auth/AuthNavigator';
 import AuthName from '../../component/auth/AuthName';
 import { isMobileWidth, isDesktopWidth } from '../../util/media';
 import LoadingPage from '../LoadingPage';
+import AuthErrorPopup from '../../component/auth/AuthErrorPopup';
 
 const RegisterPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -17,6 +18,7 @@ const RegisterPage: React.FC = () => {
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
   const [deviceType, setDeviceType] = useState('');
+  const [error, setError] = useState<string>();
 
   const navigate = useNavigate();
 
@@ -40,6 +42,7 @@ const RegisterPage: React.FC = () => {
 
   const register = async (email: string, password: string, name: string) => {
     setLoading(true);
+    setError(undefined);
     const payload = {
       email,
       password,
@@ -51,6 +54,9 @@ const RegisterPage: React.FC = () => {
         if (token) {
           localStorage.setItem('u_token', token);
           navigate('/');
+        } else {
+          const error = res.error;
+          setError(error);
         }
       })
       .finally(() => {
@@ -84,6 +90,7 @@ const RegisterPage: React.FC = () => {
         </div>
       )}
       {deviceType === 'desktop' && <p>TODO: Desktop</p>}
+      {error && <AuthErrorPopup error={error} />}
     </>
   );
 };
