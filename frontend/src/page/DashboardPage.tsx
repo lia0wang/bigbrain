@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { Button } from '@mui/material';
 import apiRequest from '../util/api';
 
-const HomePage: React.FC = () => {
+const DashboardPage: React.FC = () => {
+  if (!localStorage.getItem('u_token')) {
+    return <Navigate to="/login" />;
+  }
+
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -43,4 +47,4 @@ const HomePage: React.FC = () => {
   );
 };
 
-export default HomePage;
+export default DashboardPage;
