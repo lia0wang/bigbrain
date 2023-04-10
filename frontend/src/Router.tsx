@@ -1,17 +1,16 @@
 import React from 'react';
-import {
-  Routes,
-  Route,
-  BrowserRouter
-} from 'react-router-dom';
-import Login from './pages/login';
+import { Routes, Route, BrowserRouter } from 'react-router-dom';
+import LoginPage from './page/adminAuth/LoginPage';
+import RegisterPage from './page/adminAuth/RegisterPage';
+import HomePage from './page/HomePage';
 
-const Router = () => {
+const Router: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<div>Home Page</div>} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/" element={<HomePage />} />
       </Routes>
     </BrowserRouter>
   );
