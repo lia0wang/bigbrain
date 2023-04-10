@@ -9,6 +9,7 @@ import AuthButton from '../../component/auth/AuthButton';
 import AuthNavigator from '../../component/auth/AuthNavigator';
 import AuthThirdParty from '../../component/auth/AuthThirdParty';
 import { isMobileWidth, isDesktopWidth } from '../../util/media';
+import LoadingPage from '../LoadingPage';
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -55,7 +56,7 @@ const LoginPage: React.FC = () => {
       });
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <LoadingPage />;
 
   return (
     <>
@@ -63,7 +64,7 @@ const LoginPage: React.FC = () => {
         <div className="text-black">
           <AuthIcon />
           <AuthTitle title="Sign In" />
-          <div className="flex flex-col justify-center items-center mt-[10%]">
+          <form className="flex flex-col justify-center items-center mt-[10%]">
             <AuthEmail email={email} setEmail={setEmail} />
             <span className="my-[4%]" />
             <AuthPassword password={password} setPassword={setPassword} />
@@ -74,7 +75,7 @@ const LoginPage: React.FC = () => {
               password={password}
               innerText="Login"
             />
-          </div>
+          </form>
           <AuthNavigator
             navPath="/register"
             navText="Register"

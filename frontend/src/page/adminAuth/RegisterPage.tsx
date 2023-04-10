@@ -9,6 +9,7 @@ import AuthButton from '../../component/auth/AuthButton';
 import AuthNavigator from '../../component/auth/AuthNavigator';
 import AuthName from '../../component/auth/AuthName';
 import { isMobileWidth, isDesktopWidth } from '../../util/media';
+import LoadingPage from '../LoadingPage';
 
 const RegisterPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -57,7 +58,7 @@ const RegisterPage: React.FC = () => {
       });
   };
 
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <LoadingPage />;
 
   return (
     <>
@@ -65,7 +66,7 @@ const RegisterPage: React.FC = () => {
         <div className="text-black">
           <AuthIcon />
           <AuthTitle title="Sign Up" />
-          <div className="flex flex-col justify-center items-center mt-[10%]">
+          <form className="flex flex-col justify-center items-center mt-[10%]">
             <AuthEmail email={email} setEmail={setEmail} />
             <span className="my-[4%]" />
             <AuthPassword password={password} setPassword={setPassword} />
@@ -78,7 +79,7 @@ const RegisterPage: React.FC = () => {
               password={password}
               innerText="Register"
             />
-          </div>
+          </form>
           <AuthNavigator navPath="/login" navText="Login" navigate={navigate} />
         </div>
       )}

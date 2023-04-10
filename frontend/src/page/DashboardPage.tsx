@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
-import { Button } from '@mui/material';
-import apiRequest from '../util/api';
+import AuthLogoutButton from '../component/auth/AuthLogoutButton';
+import LoadingPage from './LoadingPage';
 
 const DashboardPage: React.FC = () => {
   if (!localStorage.getItem('u_token')) {
@@ -17,32 +17,11 @@ const DashboardPage: React.FC = () => {
     };
   }, []);
 
-  const logout = async () => {
-    setLoading(true);
-    const token = localStorage.getItem('u_token');
-    await apiRequest('POST', '/admin/auth/logout', {}, token)
-      .then((res) => {
-        localStorage.removeItem('u_token');
-        navigate('/login');
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  };
-
-  if (loading) return <div>Loading...</div>;
+  if (loading) return <LoadingPage />;
 
   return (
     <>
-      <div className="flex flex-col justify-center items-center mt-[10%]">
-        <Button
-          className="w-[80%] h-[55px]"
-          onClick={() => logout()}
-          variant="contained"
-        >
-          Logout
-        </Button>
-      </div>
+      <AuthLogoutButton setLoading={setLoading} navigate={navigate} />
     </>
   );
 };
