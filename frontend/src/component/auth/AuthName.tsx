@@ -15,7 +15,7 @@ const AuthName: React.FC<{ name: string; setName: (name: string) => void }> = ({
         value={name}
         onChange={(e) => setName(e.target.value)}
         autoComplete="name"
-        label="name"
+        label="Username"
       />
     </FormControl>
   );
