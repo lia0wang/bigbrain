@@ -9,7 +9,7 @@ const AuthButton: React.FC<{
 }> = ({ fn, email, password, innerText }) => {
   return (
     <Button
-      className="w-[80%] h-[55px]"
+      className="w-[80%] h-[55px] drop-shadow-lg"
       onClick={() => fn(email, password)}
       variant="contained"
     >
