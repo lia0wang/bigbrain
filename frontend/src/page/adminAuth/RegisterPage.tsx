@@ -11,6 +11,7 @@ import AuthName from '../../component/auth/AuthName';
 import { isMobileWidth, isDesktopWidth } from '../../util/media';
 import LoadingPage from '../LoadingPage';
 import AuthErrorPopup from '../../component/auth/AuthErrorPopup';
+import Image from 'mui-image';
 
 const RegisterPage: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -89,7 +90,37 @@ const RegisterPage: React.FC = () => {
           <AuthNavigator navPath="/login" navText="Login" navigate={navigate} />
         </div>
       )}
-      {deviceType === 'desktop' && <p>TODO: Desktop</p>}
+      {deviceType === 'desktop' && (
+        <>
+        <div className="h-screen w-screen flex flex-row place-content-end bg-sky-100">
+          <Image src="./asset/auth.webp"
+          className='h-[95%] px-[2%] py-[2%] drop-shadow-2xl ml-[4%]'
+          style={{ borderRadius: '3%' }}
+          alt="Auth" />
+          <div className="w-[60%] h-[80%] bg-sky-100 my-[5%] mr-[8%] ml-[5%] rounded-[2%] shadow-2xl
+          lg:h-[85%] lg:my[4%] lg:mr-[10%] lg:ml-[10%]
+          md:h-[90%] md:my-[3%] md:mr-[8%] md:ml-[8%]">
+          <AuthIcon />
+          <AuthTitle title="Sign Up" />
+          <form className="flex flex-col justify-center items-center mt-[10%] 2xl:mt-[8%] lg:mt-[5%]">
+            <AuthEmail email={email} setEmail={setEmail} />
+            <span className="my-[4%] lg:my-[3%]" />
+            <AuthPassword password={password} setPassword={setPassword} />
+            <span className="my-[4%] lg:my-[3%]" />
+            <AuthName name={name} setName={setName} />
+            <span className="my-[4%] lg:my-[3%]" />
+            <AuthButton
+              fn={register}
+              email={email}
+              password={password}
+              innerText="Register"
+            />
+          </form>
+          <AuthNavigator navPath="/login" navText="Login" navigate={navigate} />
+          </div>
+        </div>
+      </>
+      )}
       {error && <AuthErrorPopup error={error} />}
     </>
   );
