@@ -11,7 +11,6 @@ const AuthEmail: React.FC<{
     <FormControl className="w-[80%]" variant="outlined">
       <InputLabel htmlFor="email">Email</InputLabel>
       <OutlinedInput
-        className="bg-blue-500 opacity-30"
         id="email"
         value={email}
         onChange={(e) => setEmail(e.target.value)}

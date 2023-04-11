@@ -11,7 +11,6 @@ const AuthName: React.FC<{ name: string; setName: (name: string) => void }> = ({
     <FormControl className="w-[80%]" variant="outlined">
       <InputLabel htmlFor="name">Username</InputLabel>
       <OutlinedInput
-        className="bg-blue-500 opacity-30"
         id="name"
         value={name}
         onChange={(e) => setName(e.target.value)}

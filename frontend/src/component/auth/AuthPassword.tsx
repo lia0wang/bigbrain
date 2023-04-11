@@ -27,7 +27,6 @@ const AuthPassword: React.FC<{
     <FormControl className="w-[80%]" variant="outlined">
       <InputLabel htmlFor="password">Password</InputLabel>
       <OutlinedInput
-        className="bg-blue-500 opacity-30"
         id="password"
         type={showPassword ? 'text' : 'password'}
         value={password}

@@ -74,11 +74,11 @@ const RegisterPage: React.FC = () => {
           <AuthIcon />
           <AuthTitle title="Sign Up" />
           <form className="flex flex-col justify-center items-center mt-[10%]">
+            <AuthName name={name} setName={setName} />
+            <span className="my-[4%]" />
             <AuthEmail email={email} setEmail={setEmail} />
             <span className="my-[4%]" />
             <AuthPassword password={password} setPassword={setPassword} />
-            <span className="my-[4%]" />
-            <AuthName name={name} setName={setName} />
             <span className="my-[4%]" />
             <AuthButton
               fn={register}
@@ -103,11 +103,11 @@ const RegisterPage: React.FC = () => {
           <AuthIcon />
           <AuthTitle title="Sign Up" />
           <form className="flex flex-col justify-center items-center mt-[10%] 2xl:mt-[8%] lg:mt-[5%]">
+            <AuthName name={name} setName={setName} />
+            <span className="my-[4%] lg:my-[3%]" />
             <AuthEmail email={email} setEmail={setEmail} />
             <span className="my-[4%] lg:my-[3%]" />
             <AuthPassword password={password} setPassword={setPassword} />
-            <span className="my-[4%] lg:my-[3%]" />
-            <AuthName name={name} setName={setName} />
             <span className="my-[4%] lg:my-[3%]" />
             <AuthButton
               fn={register}
