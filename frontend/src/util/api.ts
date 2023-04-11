@@ -6,7 +6,7 @@ const API_PATH = `http://localhost:${BACKEND_PORT}`;
 interface ApiResponse {
   ok: boolean;
   error?: string; // ? means optional
-  [key: string]: any; // [key: string] means any key can be used
+  [key: string]: unknown; // [key: string] means any key can be used
 }
 
 /**
@@ -64,9 +64,12 @@ const apiRequest = async (
     });
     response.data.ok = true;
     return response.data;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(error);
-    return error.response.data;
+    return {
+      ok: false,
+      error: 'An unexpected error occurred.',
+    };
   }
 };
 
