@@ -44,14 +44,15 @@
     ]
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.21.3",
     "@testing-library/react": "^12.1.5",
     "@types/jest": "^29.5.0",
     "@types/mui-image": "^1.0.1",
     "@types/node": "^18.15.11",
-    "@types/react": "^18.0.33",
+    "@types/react": "^18.0.34",
     "@types/react-dom": "^18.0.11",
-    "@typescript-eslint/eslint-plugin": "^5.57.1",
-    "@typescript-eslint/parser": "^5.57.1",
+    "@typescript-eslint/eslint-plugin": "^5.58.0",
+    "@typescript-eslint/parser": "^5.58.0",
     "autoprefixer": "^9",
     "eslint": "^8.26.0",
     "eslint-config-standard": "^17.0.0",
