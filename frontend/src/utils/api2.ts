@@ -1,12 +1,17 @@
 import axios, { AxiosResponse, Method } from "axios";
 import { BACKEND_PORT } from "../config";
 
-const API_PATH = `http://localhost:${BACKEND_PORT}}`;
+const API_PATH = `http://localhost:${BACKEND_PORT}`;
 
-interface ApiResponse {
+// interface ApiResponse {
+//   ok: boolean;
+//   error?: string; // ? means optional
+//   [key: string]: any; // [key: string] means any key can be used
+// }
+interface ApiResponse<T = unknown> {
   ok: boolean;
-  error?: string; // ? means optional
-  [key: string]: any; // [key: string] means any key can be used
+  error?: string;
+  data?: T;
 }
 
 /**
@@ -17,12 +22,12 @@ interface ApiResponse {
  * @param {string} [token] - Optional user authentication token to include in the request headers.
  * @returns {Promise<ApiResponse>} - A promise that resolves to the response data (as a JavaScript object).
  */
-const apiRequest = async (
+const apiRequest = async <T = unknown>(
   method: Method,
   path: string,
   data: object | null = null,
   token: string | null = null
-): Promise<ApiResponse> => {
+): Promise<ApiResponse<T>> => {
   // Set up the axios instance with default options
   const instance = axios.create({
     baseURL: API_PATH,
@@ -64,9 +69,14 @@ const apiRequest = async (
     });
     response.data.ok = true;
     return response.data;
-  } catch (error: any) {
-    console.error(error);
-    return error.response.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      console.error(error);
+      return { ok: false, error: error.message, data: error.response?.data };
+    } else {
+      console.error(error);
+      return { ok: false, error: "Unknown error" };
+    }
   }
 };
 

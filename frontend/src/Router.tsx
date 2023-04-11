@@ -1,10 +1,6 @@
-import React from 'react';
-import {
-  Routes,
-  Route,
-  BrowserRouter
-} from 'react-router-dom';
-import Login from './pages/login';
+import React from "react";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
+import Login from "./pages/login";
 
 const Router = () => {
   return (
