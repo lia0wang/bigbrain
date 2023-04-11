@@ -3,7 +3,7 @@ import React from 'react';
 const AuthNavigator: React.FC<{
   navPath: string;
   navText: string;
-  navigate: any;
+  navigate: (path: string) => void;
 }> = ({ navPath, navText, navigate }) => {
   return (
     <div className="flex flex-col mt-[4%] ml-[10%] 2xl:mt-[2%]">

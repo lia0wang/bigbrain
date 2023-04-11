@@ -41,7 +41,7 @@ const RegisterPage: React.FC = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const register = async (email: string, password: string, name: string) => {
+  const register = async (email: string, password: string, name?: string) => {
     setLoading(true);
     setError(undefined);
     const payload = {

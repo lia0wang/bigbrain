@@ -13,6 +13,9 @@ const AuthErrorPopup: React.FC<{ error: string | undefined }> = ({ error }) => {
       }, 3000);
       return () => clearTimeout(timer);
     }
+    return () => {
+      // do nothing
+    };
   }, [error]);
 
   return (

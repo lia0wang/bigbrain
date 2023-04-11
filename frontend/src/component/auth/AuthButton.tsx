@@ -2,7 +2,7 @@ import React from 'react';
 import Button from '@mui/material/Button';
 
 const AuthButton: React.FC<{
-  fn: any;
+  fn: (email: string, password: string, name?: string) => void;
   email: string;
   password: string;
   innerText: string;
