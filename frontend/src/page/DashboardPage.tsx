@@ -6,7 +6,7 @@ import Navbar from '../component/dashboard/Navbar';
 import GameCard from './auth/GameCard';
 
 const DashboardPage: React.FC = () => {
-  if (!localStorage.getItem('u_token')) {
+  if (!localStorage.getItem('token')) {
     return <Navigate to="/login" />;
   }
 

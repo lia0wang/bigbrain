@@ -3,7 +3,7 @@ import { BACKEND_PORT } from '../config';
 
 const API_PATH = `http://localhost:${BACKEND_PORT}`;
 
-interface ApiResponse {
+export interface ApiResponse {
   ok: boolean;
   error?: string; // ? means optional
   [key: string]: unknown; // [key: string] means any key can be used
@@ -53,6 +53,8 @@ const apiRequest = async (
   // Append the request auth token
   if (token !== null) {
     instance.defaults.headers.common.Authorization = `Bearer ${token}`;
+  } else if (localStorage.getItem('token')) {
+    instance.defaults.headers.common.Authorization = `Bearer ${localStorage.getItem('token')}`;
   }
 
   try {

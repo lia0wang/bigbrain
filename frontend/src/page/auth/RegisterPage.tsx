@@ -53,7 +53,7 @@ const RegisterPage: React.FC = () => {
       .then((res) => {
         const token = res.token;
         if (token) {
-          localStorage.setItem('u_token', String(token));
+          localStorage.setItem('token', String(token));
           navigate('/');
         } else {
           const error = res.error;
