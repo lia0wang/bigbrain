@@ -66,10 +66,15 @@ const apiRequest = async (
     return response.data;
   } catch (error: unknown) {
     console.error(error);
-    return {
-      ok: false,
-      error: 'An unexpected error occurred.',
-    };
+    if (axios.isAxiosError(error)) {
+      return error.response?.data;
+    } else {
+      console.error(error);
+      return {
+        ok: false,
+        error: 'An unknown error occurred',
+      };
+    }
   }
 };
 
