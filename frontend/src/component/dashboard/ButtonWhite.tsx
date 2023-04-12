@@ -1,6 +1,6 @@
 import React from 'react';
 
-const WhiteButton: React.FC<{
+const ButtonWhite: React.FC<{
   text: string;
   onClick: () => void;
 }> = ({ text, onClick }) => {
@@ -14,4 +14,4 @@ const WhiteButton: React.FC<{
   );
 };
 
-export default WhiteButton;
+export default ButtonWhite;

@@ -3,7 +3,7 @@ import { Box } from '@mui/system';
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import Navbar from '../component/dashboard/Navbar';
-import GameCard from './auth/GameCard';
+import GameCard from '../component/dashboard/GameCard';
 
 const DashboardPage: React.FC = () => {
   if (!localStorage.getItem('u_token')) {

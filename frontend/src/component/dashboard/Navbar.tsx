@@ -1,6 +1,6 @@
 import * as React from 'react';
 import AuthLogoutButton from '../auth/AuthLogoutButton';
-import NavGreenButton from './BlueButton';
+import NavGreenButton from './ButtonBlue';
 
 const Navbar: React.FC = () => {
   return (
