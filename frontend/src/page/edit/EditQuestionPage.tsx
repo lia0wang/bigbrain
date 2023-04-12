@@ -1,13 +1,12 @@
 import React from 'react';
 import Navbar from '../../component/dashboard/Navbar';
-import LoadingPage from '../LoadingPage';
+import NotFoundPage from '../NotFoundPage';
 
 const EditQuestionPage: React.FC<{ qNo: string }> = ({ qNo }) => {
   if (Number(qNo) < 1 || Number(qNo) > 6) {
     return (
       <>
-        <Navbar isDashboard={false}/>
-        <LoadingPage />
+        <NotFoundPage />
       </>
     );
   }
@@ -15,7 +14,9 @@ const EditQuestionPage: React.FC<{ qNo: string }> = ({ qNo }) => {
   return (
     <>
       <Navbar isDashboard={false}/>
-      <p>Editing question number: {qNo}</p>
+      <div className="bg-sky-100 w-screen h-screen flex flex-row content-center justify-center py-20">
+        <p>Editing question number: {qNo}</p>
+      </div>
     </>
   );
 }
