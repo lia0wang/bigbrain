@@ -1,12 +1,22 @@
-import React, { useState } from 'react';
-import Button from '@mui/material/Button';
+import React, { useEffect, useState } from 'react';
 import apiRequest from '../../util/api';
 import AuthErrorPopup from './AuthErrorPopup';
-const AuthLogoutButton: React.FC<{
-  setLoading: (loading: boolean) => void;
-  navigate: (path: string) => void;
-}> = ({ setLoading, navigate }) => {
+import NavGreenButton from '../dashboard/BlueButton';
+import { useNavigate } from 'react-router-dom';
+import LoadingPage from '../../page/LoadingPage';
+
+const AuthLogoutButton: React.FC = () => {
   const [error, setError] = useState<string>();
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    return () => {
+      setLoading(false); // cancel any running tasks
+    };
+  }, []);
+
+  if (loading) return <LoadingPage />;
 
   const logout = async () => {
     setLoading(true);
@@ -28,15 +38,7 @@ const AuthLogoutButton: React.FC<{
 
   return (
     <>
-      <div className="flex flex-col justify-center items-center mt-[10%]">
-        <Button
-          className="w-[80%] h-[55px]"
-          onClick={() => logout()}
-          variant="contained"
-        >
-          Logout
-        </Button>
-      </div>
+      <NavGreenButton text="Logout" onClick={logout} />
       {error && <AuthErrorPopup error={error} />}
     </>
   );

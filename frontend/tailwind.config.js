@@ -7,6 +7,7 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        'nav-blue': '#1876d1',
       },
       animation: {
         'spin-slow': 'spin 4s linear infinite'
