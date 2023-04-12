@@ -1,6 +1,6 @@
 import React from 'react';
 
-const BlueButton: React.FC<{
+const ButtonBlue: React.FC<{
   text: string;
   onClick: () => void;
 }> = ({ text, onClick }) => {
@@ -15,4 +15,4 @@ const BlueButton: React.FC<{
   );
 };
 
-export default BlueButton;
+export default ButtonBlue;

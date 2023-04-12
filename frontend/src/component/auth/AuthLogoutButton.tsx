@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import apiRequest from '../../util/api';
 import AuthErrorPopup from './AuthErrorPopup';
-import NavGreenButton from '../dashboard/BlueButton';
+import ButtonBlue from '../dashboard/ButtonBlue';
 import { useNavigate } from 'react-router-dom';
 import LoadingPage from '../../page/LoadingPage';
 
@@ -38,7 +38,7 @@ const AuthLogoutButton: React.FC = () => {
 
   return (
     <>
-      <NavGreenButton text="Logout" onClick={logout} />
+      <ButtonBlue text="Logout" onClick={logout} />
       {error && <AuthErrorPopup error={error} />}
     </>
   );
