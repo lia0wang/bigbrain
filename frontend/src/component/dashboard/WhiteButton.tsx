@@ -5,12 +5,12 @@ const WhiteButton: React.FC<{
   onClick: () => void;
 }> = ({ text, onClick }) => {
   return (
-    <button
-      className="bg-white hover:bg-gray-100 text-gray-800 font-semibold
-                 py-2 px-4 border border-gray-400 rounded shadow"
-      onClick={onClick}
-    >
-      {text}
+    <button type="button"
+    className="px-3 py-2 text-xs font-medium text-blue-700 focus:outline-none bg-white
+               hover:bg-sky-100 transition duration-500 ease-in-out
+               focus:z-10 focus:ring-1 focus:bg-sky-100"
+    onClick={onClick}>
+    {text}
     </button>
   );
 };

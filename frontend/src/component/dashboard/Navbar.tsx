@@ -4,7 +4,7 @@ import NavGreenButton from './BlueButton';
 
 const Navbar: React.FC = () => {
   return (
-    <nav className="bg-white fixed w-full z-999 top-0 left-0 border-b border-gray-200 shadow-md">
+    <nav className="bg-white sticky w-full z-999 top-0 left-0 border-b border-gray-200 shadow-md">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <a href="/dashboard" className="flex items-center">
           <img
@@ -18,7 +18,7 @@ const Navbar: React.FC = () => {
         </a>
         <div className="flex md:order-2">
           <NavGreenButton text="Create" onClick={() => {
-            // donothign
+            // put your code here
           }} />
           <AuthLogoutButton />
         </div>
