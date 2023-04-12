@@ -2,7 +2,7 @@ import * as React from 'react';
 import AuthLogoutButton from '../auth/AuthLogoutButton';
 import NavGreenButton from './ButtonBlue';
 
-const Navbar: React.FC = () => {
+const Navbar: React.FC<{isDashboard: boolean}> = ({ isDashboard }) => {
   return (
     <nav className="bg-white sticky w-full z-999 top-0 left-0 border-b border-gray-200 shadow-md">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -17,9 +17,11 @@ const Navbar: React.FC = () => {
           </span>
         </a>
         <div className="flex md:order-2">
-          <NavGreenButton text="Create" onClick={() => {
-            // put your code here
-          }} />
+          {isDashboard && (
+            <NavGreenButton text="Create" onClick={() => {
+              // put your code here
+            }} />
+          )}
           <AuthLogoutButton />
         </div>
       </div>
