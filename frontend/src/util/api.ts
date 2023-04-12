@@ -67,11 +67,7 @@ const apiRequest = async (
   } catch (error: unknown) {
     console.error(error);
     if (axios.isAxiosError(error)) {
-      // const responseError = error.response?.data.error;
-      return {
-        ok: false,
-        error: error.response?.data.error,
-      };
+      return error.response?.data;
     } else {
       console.error(error);
       return {
