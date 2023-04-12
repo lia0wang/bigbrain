@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import Alert from '@mui/material/Alert';
+import MuiAlert, { AlertProps } from '@mui/material/Alert';
 import Stack from '@mui/material/Stack';
+
+const Alert = React.forwardRef<HTMLDivElement, AlertProps>(function Alert (
+  props,
+  ref,
+) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const AuthErrorPopup: React.FC<{ error: string | undefined }> = ({ error }) => {
   const [open, setOpen] = useState(false);
