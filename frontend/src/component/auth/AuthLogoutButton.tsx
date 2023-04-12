@@ -21,11 +21,11 @@ const AuthLogoutButton: React.FC = () => {
   const logout = async () => {
     setLoading(true);
     setError(undefined);
-    const token = localStorage.getItem('u_token');
+    const token = localStorage.getItem('token');
     await apiRequest('POST', '/admin/auth/logout', {}, token)
       .then((res) => {
         if (res.ok) {
-          localStorage.removeItem('u_token');
+          localStorage.removeItem('token');
           navigate('/login');
         } else {
           setError(res.error);

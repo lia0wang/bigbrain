@@ -4,7 +4,7 @@ import NavGreenButton from './ButtonBlue';
 
 const Navbar: React.FC<{isDashboard: boolean}> = ({ isDashboard }) => {
   return (
-    <nav className="bg-white sticky w-full z-999 top-0 left-0 border-b border-gray-200 shadow-md">
+    <nav className="bg-white fixed w-full z-999 top-0 left-0 border-b border-gray-200 shadow-md">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <a href="/dashboard" className="flex items-center">
           <img
