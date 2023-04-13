@@ -12,7 +12,7 @@ const DashboardPage: React.FC = () => {
 
   return (
     <>
-      <Navbar isDashboard={true} isEditQuestionPage={false} />
+      <Navbar pageType='Dashboard' />
       <div className="bg-sky-100 w-screen flex flex-col content-center justify-center py-20">
         <Box className="flex-grow mt-[20px] mx-auto" sx={{ maxWidth: 1200 }}>
           <Grid container spacing={{ xs: 2, sm: 3, md: 4, lg: 5, xl: 6, xxl: 6 }} columnSpacing={{ xs: 2, sm: 3, md: 4, lg: 5, xl: 6, xxl: 6 }}>

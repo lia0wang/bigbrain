@@ -24,7 +24,7 @@ const EditQuestionPage: React.FC<{ qNo: string }> = ({ qNo }) => {
 
   return (
     <>
-      <Navbar isDashboard={false} isEditQuestionPage={true} />
+      <Navbar pageType='EditQuestion' />
       <div className="bg-sky-100 w-screen h-screen flex flex-row content-center justify-center py-20">
         <div className="flex flex-col">
           <p>Question Title</p>

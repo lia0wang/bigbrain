@@ -8,9 +8,8 @@ import CreateModal from '../../modal/CreateGameModal';
 import { Alert, Snackbar } from '@mui/material';
 
 const Navbar: React.FC<{
-  isDashboard: boolean;
-  isEditQuestionPage: boolean;
-}> = ({ isDashboard, isEditQuestionPage }) => {
+  pageType?: string;
+}> = ({ pageType }) => {
   const [showCreateModal, setShowCreateModal] = React.useState(false);
   const [showSnackbar, setShowSnackbar] = React.useState('');
 
@@ -42,13 +41,13 @@ const Navbar: React.FC<{
           </span>
         </a>
         <div className="flex md:order-2">
-          {isDashboard && (
+          {pageType === 'Dashboard' && (
             <NavGreenButton
               text="Create"
               onClick={openCreateModal}
             />
           )}
-          {isEditQuestionPage && (
+          {pageType === 'EditQuestion' && (
             <EditButtonDrawer />
           )}
           <AuthLogoutButton />

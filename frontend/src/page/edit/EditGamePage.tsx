@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import Navbar from '../../component/dashboard/Navbar';
 import apiRequest, { ApiResponse } from '../../util/api';
 import LoadingPage from '../LoadingPage';
 import EditQuestionPage from './EditQuestionPage';
@@ -27,11 +28,14 @@ const EditGamePage: React.FC = () => {
   }
 
   return (
-    <div>
-      <h1>Game Edit Page</h1>
-      <p>Editing game with ID: {gameId}</p>
-      <pre>{JSON.stringify(resp, null, 2)}</pre>
-    </div>
+    <>
+      <Navbar />
+      <div className="bg-sky-100 w-screen h-screen flex flex-row content-center justify-center py-20">
+        <h1>Game Edit Page</h1>
+        <p>Editing game with ID: {gameId}</p>
+        <pre>{JSON.stringify(resp, null, 2)}</pre>
+      </div>
+    </>
   );
 };
 
