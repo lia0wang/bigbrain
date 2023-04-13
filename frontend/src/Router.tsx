@@ -3,7 +3,6 @@ import { Routes, Route, BrowserRouter, Navigate } from 'react-router-dom';
 import LoginPage from './page/auth/LoginPage';
 import RegisterPage from './page/auth/RegisterPage';
 import DashboardPage from './page/DashboardPage';
-import EditQuestionPage from './page/edit/EditQuestionPage';
 import EditGamePage from './page/edit/EditGamePage';
 
 const Router: React.FC = () => {
@@ -16,7 +15,7 @@ const Router: React.FC = () => {
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/game/edit/" element={<EditGamePage />}>
           <Route path=":gameId"/>
-          <Route path=":gameId/:questionNo" element={<EditQuestionPage qNo=':questionNo' />} />
+          <Route path=":gameId/:questionNo" />
         </Route>
       </Routes>
     </BrowserRouter>
