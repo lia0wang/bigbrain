@@ -65,7 +65,7 @@ const GameCard: React.FC<{
           Time: {totalTime} s
         </span>
         <span className="bg-blue-100 text-blue-800 text-base font-medium inline-flex items-center px-2.5 py-0.5 rounded border border-blue-400 ml-1">
-          Questions
+          #Questions
           <span className="inline-flex items-center justify-center w-4 h-4 ml-2 text-sm font-semibold text-blue-800 bg-blue-200 rounded-full">
             {numQuestions}
           </span>

@@ -5,8 +5,10 @@ import apiRequest, { ApiResponse } from '../../util/api';
 import LoadingPage from '../LoadingPage';
 import EditQuestionPage from './EditQuestionPage';
 import NotFoundPage from '../NotFoundPage';
+import { uid } from 'uid';
 
 interface Question {
+  id: string; // The question ID
   title: string; // The question itself
   type: 'single' | 'multiple'; // The question type (multiple choice, single choice)
   timeLimit: number;
@@ -58,17 +60,20 @@ const EditGamePage: React.FC = () => {
     );
   }
 
-  const deleteQuestion = (index: number) => {
-    console.log('Delete question', index);
-    resp.questions.splice(index, 1);
+  const deleteQuestion = (qid: string) => {
+    console.log('Delete question', qid);
+    const newQuestions = resp.questions.filter((obj) => obj.question.id !== qid);
+    resp.questions = newQuestions;
     setResp({ ...resp });
     apiRequest('PUT', `/admin/quiz/${gameId}`, resp);
   };
 
   const addQuestion = () => {
-    console.log('Add question');
+    const qId = `question-${uid()}`;
+    console.log('Add question', qId);
     resp.questions.push({
       question: {
+        id: qId,
         title: '',
         type: 'single',
         timeLimit: 10,
@@ -80,10 +85,9 @@ const EditGamePage: React.FC = () => {
     apiRequest('PUT', `/admin/quiz/${gameId}`, resp);
   };
 
-  const editQuestion = (index: number) => {
-    console.log('Edit question', index + 1);
-    // return <EditQuestionPage qNo={String(index + 1)} />;
-    navigate(`/game/edit/${gameId}/${index + 1}`);
+  const editQuestion = (qid: string) => {
+    // return <EditQuestionPage qNo={String(qid + 1)} />;
+    navigate(`/game/edit/${gameId}/${qid}`);
   };
 
   return (
@@ -118,16 +122,17 @@ const EditGamePage: React.FC = () => {
         </div>
           <h2 className="text-xl mt-8 mb-4">Questions</h2>
           <ul>
-          {resp.questions.map((question, index) => {
-            if (!question || !question.question) {
+          {resp.questions.map((obj, index) => {
+            console.log(obj);
+            if (!obj || !obj.question) {
               return null;
             }
             return (
               <li key={index} className="mb-2">
                 <div className="flex items-center">
-                  <button className="bg-red-500 text-white px-2 py-1 rounded mr-2" onClick={() => deleteQuestion(index)}>Delete</button>
-                  <button className="bg-blue-500 text-white px-2 py-1 rounded mr-2" onClick={() => editQuestion(index)}>Edit</button>
-                  <span>{question.question.title}</span>
+                  <button className="bg-red-500 text-white px-2 py-1 rounded mr-2" onClick={() => deleteQuestion(obj.question.id)}>Delete</button>
+                  <button className="bg-blue-500 text-white px-2 py-1 rounded mr-2" onClick={() => editQuestion(obj.question.id)}>Edit</button>
+                  <span className="text-lg text-black">{obj.question.title}</span>
                 </div>
               </li>
             );
