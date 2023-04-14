@@ -130,10 +130,10 @@ const EditGamePage: React.FC = () => {
           />
         </div>
         {gameThumbnail && (
-        <div className="mb-4 flex justify-center">
-          {/* <label className="block text-s font-medium text-gray-700">Thumbnail Preview</label> */}
-          <img src={gameThumbnail} alt="Thumbnail Preview" className="w-1/2 h-auto rounded-md shadow-sm" />
-        </div>
+          <div className="mb-4 flex justify-center">
+            {/* <label className="block text-s font-medium text-gray-700">Thumbnail Preview</label> */}
+            <img src={gameThumbnail} alt="Thumbnail Preview" className="w-1/2 h-auto rounded-md shadow-sm" />
+          </div>
         )}
         <div className="mb-4">
           <label htmlFor="gameThumbnail" className="block text-s font-medium text-gray-700">Game Thumbnail</label>
@@ -149,8 +149,8 @@ const EditGamePage: React.FC = () => {
         <div className="mt-3 flex justify-center">
           <button className="bg-green-500 text-white px-4 py-2 rounded" onClick={() => saveChanges()}>Save Changes</button>
         </div>
-          <h2 className="text-xl mt-8 mb-4">Questions</h2>
-          <ul>
+        <h2 className="text-xl mt-8 mb-4">Questions</h2>
+        <ul>
           {resp.questions.map((obj, index) => {
             if (!obj || !obj.question) {
               return null;
@@ -165,10 +165,10 @@ const EditGamePage: React.FC = () => {
               </li>
             );
           })}
-          </ul>
-          <div className="mt-2 flex justify-center">
-            <button className="bg-blue-500 text-white px-2 py-1 rounded mr-2" onClick={() => addQuestion()}>Add Question</button>
-          </div>
+        </ul>
+        <div className="mt-2 flex justify-center">
+          <button className="bg-blue-500 text-white px-2 py-1 rounded mr-2" onClick={() => addQuestion()}>Add Question</button>
+        </div>
       </div>
     </>
   );

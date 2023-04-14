@@ -32,7 +32,7 @@ const Navbar: React.FC<{
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
         <a href="/dashboard" className="flex items-center">
           <img src="/asset/brain.png" className="h-8 mr-3" alt="Brain Logo" />
-          <span className="self-center text-2xl font-semibold whitespace-nowrap text-nav-blue">
+          <span className="self-center text-2xl font-semibold whitespace-nowrap text-black">
             Big Brain
           </span>
         </a>
