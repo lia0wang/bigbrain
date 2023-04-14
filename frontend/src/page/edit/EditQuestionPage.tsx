@@ -14,7 +14,7 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 const EditQuestionPage: React.FC<{ qNo: string }> = ({ qNo }) => {
-  if (Number(qNo) < 1 || Number(qNo) > 6) {
+  if (Number(qNo) < 1) {
     return (
       <>
         <NotFoundPage />

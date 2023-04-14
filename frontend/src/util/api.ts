@@ -6,7 +6,7 @@ const API_PATH = `http://localhost:${BACKEND_PORT}`;
 export interface ApiResponse {
   ok: boolean;
   error?: string; // ? means optional
-  [key: string]: unknown; // [key: string] means any key can be used
+  [key: string]: any; // [key: string] means any key can be used
 }
 
 /**

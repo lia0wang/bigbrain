@@ -3,15 +3,16 @@ import * as React from 'react';
 import apiRequest from '../../util/api';
 import AuthLogoutButton from '../auth/AuthLogoutButton';
 import EditButtonDrawer from '../edit/EditButtonDrawer';
-import NavGreenButton from './ButtonBlue';
+import ButtonBlue from './ButtonBlue';
 import CreateModal from '../../modal/CreateGameModal';
-import { Alert, Snackbar } from '@mui/material';
+import AuthErrorPopup from '../auth/AuthErrorPopup';
 
 const Navbar: React.FC<{
   pageType?: string;
 }> = ({ pageType }) => {
   const [showCreateModal, setShowCreateModal] = React.useState(false);
-  const [showSnackbar, setShowSnackbar] = React.useState('');
+  const [name, setName] = React.useState('');
+  const [isGameCreated, setIsGameCreated] = React.useState(false);
 
   const openCreateModal = () => {
     setShowCreateModal(true);
@@ -22,13 +23,9 @@ const Navbar: React.FC<{
   };
 
   const createGame = (name: string) => {
-    console.log('Creating game with name: ', name);
     apiRequest('POST', '/admin/quiz/new', { name })
-    setShowSnackbar(name);
-  };
-
-  const handleCloseSnackbar = () => {
-    setShowSnackbar('');
+    setName(name);
+    setIsGameCreated(true);
   };
 
   return (
@@ -42,7 +39,7 @@ const Navbar: React.FC<{
         </a>
         <div className="flex md:order-2">
           {pageType === 'Dashboard' && (
-            <NavGreenButton
+            <ButtonBlue
               text="Create"
               onClick={openCreateModal}
             />
@@ -59,16 +56,9 @@ const Navbar: React.FC<{
           onConfirm={createGame}
         />
       )}
-      <Snackbar
-        open={showSnackbar !== ''}
-        autoHideDuration={3500} // 3.5 seconds
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
-          Game {showSnackbar} has been created!
-        </Alert>
-      </Snackbar>
+      {isGameCreated && (
+        <AuthErrorPopup error={`${name} created successfully`} />
+      )}
     </nav>
   );
 };

@@ -30,11 +30,18 @@ const CreateModal: React.FC<CreateModalProps> = ({ onClose, onConfirm }) => {
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
-          <div className="flex justify-end">
-            <button className="bg-blue-500 hover:bg-blue-400 text-white px-4 py-2 rounded-md mr-2" type="submit">
+          <div className="flex flex-row justify-around">
+            <button
+            className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 w-[90px]
+                       border-b-4 border-blue-700 hover:border-blue-500 rounded"
+            type="submit">
               OK
             </button>
-            <button className="bg-gray-300 hover:bg-gray-400 text-black px-4 py-2 rounded-md" type="button" onClick={onClose}>
+            <button
+            className="bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 px-4 w-[90px]
+                       border border-gray-400 rounded shadow"
+            type="button"
+            onClick={onClose}>
               Cancel
             </button>
           </div>

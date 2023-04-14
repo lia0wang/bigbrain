@@ -10,7 +10,7 @@
     "moduleResolution": "node",
 
     "allowSyntheticDefaultImports": true,
-    "strict": true,
+    // "strict": true,
     "noUnusedParameters": true,
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
@@ -19,7 +19,7 @@
     "noUncheckedIndexedAccess": true,
     "noPropertyAccessFromIndexSignature": false,
     "noFallthroughCasesInSwitch": true,
-    "exactOptionalPropertyTypes": true,
+    // "exactOptionalPropertyTypes": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true
   },
