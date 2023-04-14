@@ -1,10 +1,12 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import WhiteButton from './ButtonWhite';
+import apiRequest from '../../util/api';
+import { useNavigate } from 'react-router-dom';
 
 const GameCard: React.FC<{
   title: string;
@@ -15,10 +17,21 @@ const GameCard: React.FC<{
   thumbnail,
   id,
 }) => {
+  const [numQuestions, setNumQuestions] = useState(0);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchGameUseGameId = async () => {
+      const response = await apiRequest('GET', `/admin/quiz/${id}`);
+      setNumQuestions(response.questions.length);
+    };
+    fetchGameUseGameId();
+  }, []);
+
   // Default
   if (thumbnail === null) thumbnail = 'https://cdn.dribbble.com/userupload/4487190/file/original-d4c3ba33335a133315f0e2dca0332649.png?compress=1&resize=752x';
   return (
-    <Card sx={{ maxWidth: 345 }}>
+    <Card className='sm:min-w-[200px] md:min-w-[260px] lg:min-w-[280px] xl:min-w-[300] 2xl:min-w-[300px]'>
       <div className="flex flex-row items-center justify-center mt-4">
         <span className="bg-blue-100 text-blue-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded border border-blue-400 mr-1">
           <svg
@@ -39,7 +52,7 @@ const GameCard: React.FC<{
         <span className="bg-blue-100 text-blue-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded border border-blue-400 ml-1">
           Questions
           <span className="inline-flex items-center justify-center w-4 h-4 ml-2 text-xs font-semibold text-blue-800 bg-blue-200 rounded-full">
-            {id}
+            {numQuestions}
           </span>
         </span>
       </div>
@@ -59,10 +72,10 @@ const GameCard: React.FC<{
       </CardContent>
       <CardActions>
         <WhiteButton text="EDIT" onClick={() => {
-          // put your code here
+          navigate(`/game/edit/${id}`);
         }} />
         <WhiteButton text="DELETE" onClick={() => {
-          // put your code here
+          apiRequest('DELETE', `/admin/quiz/${id}`, { id });
         }} />
       </CardActions>
 

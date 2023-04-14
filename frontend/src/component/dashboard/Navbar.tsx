@@ -5,13 +5,14 @@ import AuthLogoutButton from '../auth/AuthLogoutButton';
 import EditButtonDrawer from '../edit/EditButtonDrawer';
 import ButtonBlue from './ButtonBlue';
 import CreateModal from '../../modal/CreateGameModal';
-import { Alert, Snackbar } from '@mui/material';
+import AuthErrorPopup from '../auth/AuthErrorPopup';
 
 const Navbar: React.FC<{
   pageType?: string;
 }> = ({ pageType }) => {
   const [showCreateModal, setShowCreateModal] = React.useState(false);
   const [name, setName] = React.useState('');
+  const [isGameCreated, setIsGameCreated] = React.useState(false);
 
   const openCreateModal = () => {
     setShowCreateModal(true);
@@ -22,13 +23,9 @@ const Navbar: React.FC<{
   };
 
   const createGame = (name: string) => {
-    console.log('Creating game with name: ', name);
     apiRequest('POST', '/admin/quiz/new', { name })
     setName(name);
-  };
-
-  const handleCloseSnackbar = () => {
-    setName('');
+    setIsGameCreated(true);
   };
 
   return (
@@ -59,17 +56,9 @@ const Navbar: React.FC<{
           onConfirm={createGame}
         />
       )}
-      <Snackbar
-        open={name !== ''}
-        className="fixed top-0 left-0 z-50 w-[80%] md:w-[50%] lg:w-[30%] mx-auto"
-        autoHideDuration={3500} // 3.5 seconds
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert onClose={handleCloseSnackbar} severity="success" sx={{ width: '100%' }}>
-          Game {name} has been created!
-        </Alert>
-      </Snackbar>
+      {isGameCreated && (
+        <AuthErrorPopup error={`${name} created successfully`} />
+      )}
     </nav>
   );
 };

@@ -27,11 +27,11 @@ const AuthErrorPopup: React.FC<{ error: string | undefined }> = ({ error }) => {
 
   return (
     <Stack
-      className="fixed top-0 left-0 z-50 w-[80%] ml-[10%] mt-[3%]"
+      className="fixed top-0 left-0 z-50 w-[80%] ml-[10%] mt-[3%] flex justify-center items-center"
       spacing={2}
     >
       {open && (
-        <Alert severity="error" onClose={() => setOpen(false)}>
+        <Alert severity="info" onClose={() => setOpen(false)}>
           {error}
         </Alert>
       )}
