@@ -4,10 +4,12 @@ import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
 import Button from '@mui/material/Button';
 import EditFormControl from './EditFormControl';
+import { Fab } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 
 const EditButtonDrawer: React.FC = () => {
   const [state, setState] = useState({
-    right: true,
+    right: false,
   });
   const [type, setType] = useState('');
   const [time, setTime] = useState('');
@@ -70,13 +72,11 @@ const EditButtonDrawer: React.FC = () => {
   return (
     <>
       <div>
-        <button
-          className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 mx-2
-                 border-b-4 border-blue-800 hover:border-blue-700 rounded"
-          onClick={toggleDrawer(true)}
-        >
-          Edit
-        </button>
+        <Fab
+        onClick={toggleDrawer(true)}
+        size="small" color="primary" aria-label="add">
+          <AddIcon />
+        </Fab>
         <Drawer
           anchor={'right'}
           open={state.right}

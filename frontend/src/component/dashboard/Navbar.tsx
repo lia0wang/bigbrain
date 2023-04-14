@@ -1,8 +1,7 @@
 // Navbar.tsx
-import * as React from 'react';
+import React, { useState } from 'react';
 import apiRequest from '../../util/api';
 import AuthLogoutButton from '../auth/AuthLogoutButton';
-import EditButtonDrawer from '../edit/EditButtonDrawer';
 import ButtonBlue from './ButtonBlue';
 import CreateModal from '../../modal/CreateGameModal';
 import AuthErrorPopup from '../auth/AuthErrorPopup';
@@ -10,9 +9,9 @@ import AuthErrorPopup from '../auth/AuthErrorPopup';
 const Navbar: React.FC<{
   pageType?: string;
 }> = ({ pageType }) => {
-  const [showCreateModal, setShowCreateModal] = React.useState(false);
-  const [name, setName] = React.useState('');
-  const [isGameCreated, setIsGameCreated] = React.useState(false);
+  const [name, setName] = useState('');
+  const [isGameCreated, setIsGameCreated] = useState(false);
+  const [showCreateModal, setShowCreateModal] = useState(false);
 
   const openCreateModal = () => {
     setShowCreateModal(true);
@@ -43,9 +42,6 @@ const Navbar: React.FC<{
               text="Create"
               onClick={openCreateModal}
             />
-          )}
-          {pageType === 'EditQuestion' && (
-            <EditButtonDrawer />
           )}
           <AuthLogoutButton />
         </div>

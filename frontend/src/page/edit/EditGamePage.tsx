@@ -3,18 +3,18 @@ import React, { useEffect, useState } from 'react';
 import Navbar from '../../component/dashboard/Navbar';
 import apiRequest, { ApiResponse } from '../../util/api';
 import LoadingPage from '../LoadingPage';
-import EditQuestionPage from './EditQuestionPage';
 import NotFoundPage from '../NotFoundPage';
 import { uid } from 'uid';
+import EditQuestionPage from './EditQuestionPage';
 
 interface Question {
-  id: string; // The question ID
-  title: string; // The question itself
-  type: 'single' | 'multiple'; // The question type (multiple choice, single choice)
+  id: string;
+  title: string;
+  media: string;
+  type: 'single' | 'multiple';
   timeLimit: number;
   points: number;
-  answers: Array<{ answer: string }>; // Anywhere between 2 and 6 answers, that each contain the answer as a string
-  videoURL?: string; // The ability to optionally attach a URL to a youtube video, or upload a photo, to enhance the question being asked).
+  answers: Array<{ answer: string }>;
 }
 
 interface GameApiResponse extends ApiResponse {
@@ -26,10 +26,10 @@ interface GameApiResponse extends ApiResponse {
 }
 
 const EditGamePage: React.FC = () => {
-  const { gameId, questionNo } = useParams();
-  // if questionNo is defined, return GameQuestionEditPage
-  if (questionNo) {
-    return <EditQuestionPage qNo={questionNo} />;
+  const { gameId, questionId } = useParams();
+  // if questionId is defined, return GameQuestionEditPage
+  if (questionId) {
+    return <EditQuestionPage qId={questionId} gameId={gameId} />;
   }
 
   const navigate = useNavigate();
@@ -61,7 +61,6 @@ const EditGamePage: React.FC = () => {
   }
 
   const deleteQuestion = (qid: string) => {
-    console.log('Delete question', qid);
     const newQuestions = resp.questions.filter((obj) => obj.question.id !== qid);
     resp.questions = newQuestions;
     setResp({ ...resp });
@@ -70,11 +69,11 @@ const EditGamePage: React.FC = () => {
 
   const addQuestion = () => {
     const qId = `question-${uid()}`;
-    console.log('Add question', qId);
     resp.questions.push({
       question: {
         id: qId,
         title: 'Default Question Title',
+        media: 'https://cdn.dribbble.com/userupload/4487190/file/original-d4c3ba33335a133315f0e2dca0332649.png?compress=1&resize=752x',
         type: 'single',
         timeLimit: 5,
         points: 100,
@@ -86,7 +85,6 @@ const EditGamePage: React.FC = () => {
   };
 
   const editQuestion = (qid: string) => {
-    // return <EditQuestionPage qNo={String(qid + 1)} />;
     navigate(`/game/edit/${gameId}/${qid}`);
   };
 
@@ -123,7 +121,6 @@ const EditGamePage: React.FC = () => {
           <h2 className="text-xl mt-8 mb-4">Questions</h2>
           <ul>
           {resp.questions.map((obj, index) => {
-            console.log(obj);
             if (!obj || !obj.question) {
               return null;
             }
