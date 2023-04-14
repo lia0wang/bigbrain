@@ -24,11 +24,12 @@ const DashboardPage: React.FC = () => {
   return (
     <>
       <Navbar pageType='Dashboard' />
-      <div className="bg-sky-100 w-screen min-h-screen py-20 flex flex-row justify-center">
-        <Box className="mt-[20px] mx-[6%] lg:mx-[4%] xl:mx-[2%] 2xl:mx-[0] max-w-[1600px]">
+      <div className="bg-sky-100 w-screen min-h-screen py-20 px-[2%]">
+        <Box className="mt-[20px] mx-[6%] lg:mx-[4%] xl:mx-[2%] 2xl:mx-[0]">
           <Grid container
             spacing={{ xs: 2, sm: 3, md: 4, lg: 5, xl: 6, xxl: 6 }}
             columnSpacing={{ xs: 2, sm: 3, md: 4, lg: 5, xl: 6, xxl: 6 }}
+            className="flex flex-row justify-start"
           >
             {gameList
               .sort((gameA, gameB) => new Date(gameB.createdAt).getTime() - new Date(gameA.createdAt).getTime())

@@ -33,7 +33,7 @@ const GameCard: React.FC<{
   return (
     <Card className='sm:min-w-[200px] md:min-w-[260px] lg:min-w-[280px] xl:min-w-[300] 2xl:min-w-[300px]'>
       <div className="flex flex-row items-center justify-center mt-4">
-        <span className="bg-blue-100 text-blue-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded border border-blue-400 mr-1">
+        <span className="bg-blue-100 text-blue-800 text-base font-medium inline-flex items-center px-2.5 py-0.5 rounded border border-blue-400 mr-1">
           <svg
             aria-hidden="true"
             className="w-3 h-3 mr-1"
@@ -49,9 +49,9 @@ const GameCard: React.FC<{
           </svg>
           Time: 200s
         </span>
-        <span className="bg-blue-100 text-blue-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded border border-blue-400 ml-1">
+        <span className="bg-blue-100 text-blue-800 text-base font-medium inline-flex items-center px-2.5 py-0.5 rounded border border-blue-400 ml-1">
           Questions
-          <span className="inline-flex items-center justify-center w-4 h-4 ml-2 text-xs font-semibold text-blue-800 bg-blue-200 rounded-full">
+          <span className="inline-flex items-center justify-center w-4 h-4 ml-2 text-sm font-semibold text-blue-800 bg-blue-200 rounded-full">
             {numQuestions}
           </span>
         </span>
@@ -65,7 +65,8 @@ const GameCard: React.FC<{
       />
       <CardContent>
         <div className="flex flex-row items-center justify-center">
-            <Typography gutterBottom variant="h6" component="div">
+            <Typography
+              gutterBottom variant="h5" component="div">
               {title}
             </Typography>
         </div>
@@ -73,7 +74,7 @@ const GameCard: React.FC<{
       <CardActions>
         <WhiteButton text="EDIT" onClick={() => {
           navigate(`/game/edit/${id}`);
-        }} />
+        }}/>
         <WhiteButton text="DELETE" onClick={() => {
           apiRequest('DELETE', `/admin/quiz/${id}`, { id });
         }} />
