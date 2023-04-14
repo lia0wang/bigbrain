@@ -74,11 +74,11 @@ const EditGamePage: React.FC = () => {
     resp.questions.push({
       question: {
         id: qId,
-        title: '',
+        title: 'Default Question Title',
         type: 'single',
-        timeLimit: 10,
-        points: 10,
-        answers: [{ answer: '' }, { answer: '' }],
+        timeLimit: 5,
+        points: 100,
+        answers: [],
       },
     });
     setResp({ ...resp });
