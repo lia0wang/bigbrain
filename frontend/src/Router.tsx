@@ -4,6 +4,7 @@ import LoginPage from './page/auth/LoginPage';
 import RegisterPage from './page/auth/RegisterPage';
 import DashboardPage from './page/DashboardPage';
 import EditGamePage from './page/edit/EditGamePage';
+import NotFoundPage from './page/NotFoundPage';
 
 const Router: React.FC = () => {
   return (
@@ -17,6 +18,7 @@ const Router: React.FC = () => {
           <Route path=":gameId"/>
           <Route path=":gameId/:questionNo" />
         </Route>
+        <Route path="*" element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   );

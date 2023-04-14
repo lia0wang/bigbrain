@@ -31,7 +31,7 @@ const AuthErrorPopup: React.FC<{ error: string | undefined }> = ({ error }) => {
       spacing={2}
     >
       {open && (
-        <Alert severity="info" onClose={() => setOpen(false)}>
+        <Alert severity="error" onClose={() => setOpen(false)}>
           {error}
         </Alert>
       )}

@@ -6,7 +6,17 @@ import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import WhiteButton from './ButtonWhite';
 
-const GameCard: React.FC = () => {
+const GameCard: React.FC<{
+  title: string;
+  thumbnail: string;
+  id: number;
+}> = ({
+  title,
+  thumbnail,
+  id,
+}) => {
+  // Default
+  if (thumbnail === null) thumbnail = 'https://cdn.dribbble.com/userupload/4487190/file/original-d4c3ba33335a133315f0e2dca0332649.png?compress=1&resize=752x';
   return (
     <Card sx={{ maxWidth: 345 }}>
       <div className="flex flex-row items-center justify-center mt-4">
@@ -29,7 +39,7 @@ const GameCard: React.FC = () => {
         <span className="bg-blue-100 text-blue-800 text-xs font-medium inline-flex items-center px-2.5 py-0.5 rounded border border-blue-400 ml-1">
           Questions
           <span className="inline-flex items-center justify-center w-4 h-4 ml-2 text-xs font-semibold text-blue-800 bg-blue-200 rounded-full">
-            2
+            {id}
           </span>
         </span>
       </div>
@@ -37,13 +47,13 @@ const GameCard: React.FC = () => {
         component="img"
         alt="Img"
         height="140"
-        image="https://cdn.dribbble.com/userupload/4487190/file/original-d4c3ba33335a133315f0e2dca0332649.png?compress=1&resize=752x"
+        image={thumbnail}
         className="p-4"
       />
       <CardContent>
         <div className="flex flex-row items-center justify-center">
             <Typography gutterBottom variant="h6" component="div">
-              Game Title
+              {title}
             </Typography>
         </div>
       </CardContent>

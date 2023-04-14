@@ -4,6 +4,7 @@ import Navbar from '../../component/dashboard/Navbar';
 import apiRequest, { ApiResponse } from '../../util/api';
 import LoadingPage from '../LoadingPage';
 import EditQuestionPage from './EditQuestionPage';
+import NotFoundPage from '../NotFoundPage';
 
 interface Question {
   title: string; // The question itself
@@ -16,11 +17,10 @@ interface Question {
 
 interface GameApiResponse extends ApiResponse {
   name: string;
-  owner: string;
-  questions: Array<{ question: Question }>; // Define the question structure as needed
   thumbnail: string | null;
+  owner: string;
   active: boolean | null;
-  createdAt: string;
+  questions: Array<{ question: Question }>; // Define the question structure as needed
 }
 
 const EditGamePage: React.FC = () => {
@@ -48,6 +48,14 @@ const EditGamePage: React.FC = () => {
 
   if (!resp) {
     return <LoadingPage />;
+  }
+
+  if (resp.error) {
+    return (
+      <>
+        <NotFoundPage />
+      </>
+    );
   }
 
   const deleteQuestion = (index: number) => {
