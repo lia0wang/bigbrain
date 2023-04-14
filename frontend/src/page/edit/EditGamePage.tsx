@@ -45,7 +45,8 @@ const EditGamePage: React.FC = () => {
     const fetchData = async () => {
       const response = await apiRequest('GET', `/admin/quiz/${gameId}`);
       setResp(response as GameApiResponse);
-      setGameThumbnail(response.thumbnail === null ? null : String(response.thumbnail));
+      const defaultThumbnail = 'https://cdn.dribbble.com/userupload/4487190/file/original-d4c3ba33335a133315f0e2dca0332649.png?compress=1&resize=752x'
+      setGameThumbnail(response.thumbnail === null ? defaultThumbnail : String(response.thumbnail));
       setGameName(String(response.name));
       setModifiedGameName(String(response.name));
     };
