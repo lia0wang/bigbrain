@@ -18,15 +18,30 @@ const GameCard: React.FC<{
   id,
 }) => {
   const [numQuestions, setNumQuestions] = useState(0);
+  const [questionList, setQuestionList] = useState([]);
+  const [totalTime, setTotalTime] = useState(0);
+
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchGameUseGameId = async () => {
       const response = await apiRequest('GET', `/admin/quiz/${id}`);
       setNumQuestions(response.questions.length);
+      setQuestionList(response.questions);
     };
     fetchGameUseGameId();
-  }, []);
+  }, [id]);
+
+  useEffect(() => {
+    const getTotalTime = () => {
+      let totalTime = 0;
+      questionList.forEach((obj) => {
+        totalTime += obj.question.timeLimit;
+      });
+      return totalTime;
+    };
+    setTotalTime(getTotalTime());
+  }, [questionList]);
 
   // Default
   if (thumbnail === null) thumbnail = 'https://cdn.dribbble.com/userupload/4487190/file/original-d4c3ba33335a133315f0e2dca0332649.png?compress=1&resize=752x';
@@ -47,7 +62,7 @@ const GameCard: React.FC<{
               clipRule="evenodd"
             ></path>
           </svg>
-          Time: 200s
+          Time: {totalTime} s
         </span>
         <span className="bg-blue-100 text-blue-800 text-base font-medium inline-flex items-center px-2.5 py-0.5 rounded border border-blue-400 ml-1">
           Questions
