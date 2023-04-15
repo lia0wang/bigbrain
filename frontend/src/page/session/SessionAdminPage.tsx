@@ -2,82 +2,85 @@ import { useNavigate, useParams } from 'react-router-dom';
 import NotFoundPage from '../NotFoundPage';
 import apiRequest from '../../util/api';
 import React, { useEffect, useState } from 'react';
+import { POLLING_INTERVAL } from '../../config';
 import LoadingPage from '../LoadingPage';
-
-// interface Question {
-//   id: string;
-//   title: string;
-//   media: string;
-//   type: 'single' | 'multiple';
-//   timeLimit: number;
-//   points: number;
-//   answers: Array<{ answer: string }>;
-// }
-
-// interface GameApiResponse extends ApiResponse {
-//   name: string;
-//   thumbnail: string | null;
-//   owner: string;
-//   active: boolean | null;
-//   questions: Array<{ question: Question }>; // Define the question structure as needed
-// }
+import { Button, Card, CardContent, List, ListItem, Typography, ListItemText } from '@mui/material';
+import { PlayArrow } from '@mui/icons-material';
+import Navbar from '../../component/dashboard/Navbar';
 
 const SessionAdminPage: React.FC = () => {
   const { sessionId } = useParams();
-  console.log(sessionId);
-  // if questionId is defined, return GameQuestionEditPage
+  const navigate = useNavigate();
+  const [players, setPlayers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  // const [quizId, setQuizId] = useState(true);
+
   if (!sessionId) {
     return <NotFoundPage />;
   }
 
-  // const [resp, setResp] = useState(null);
-  // const [gameThumbnail, setGameThumbnail] = useState<string | null>(null);
-  // const [gameName, setGameName] = useState<string>('');
+  useEffect(() => {
+    const fetchPlayers = async () => {
+      const response = await apiRequest('GET', `/admin/session/${sessionId}/status`);
+      console.log(response);
+      setPlayers(response.results.players);
+      setLoading(false);
+    };
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const response = await apiRequest('GET', `/admin/${sessionId}/status`);
-  //     console.log(response);
-  //     setResp(response);
-  //     const defaultThumbnail = 'https://cdn.dribbble.com/userupload/4487190/file/original-d4c3ba33335a133315f0e2dca0332649.png?compress=1&resize=752x'
-  //     setGameThumbnail(response.thumbnail === null ? defaultThumbnail : String(response.thumbnail));
-  //     setGameName(String(response.name));
-  //   };
-  //   fetchData();
-  // }, [resp]);
+    const intervalId = setInterval(fetchPlayers, 5000);
 
-  // // if (!resp) {
-  // //   return <LoadingPage />;
-  // // }
-  // console.log(resp);
+    setLoading(true); // Set loading state before the initial fetch
+    fetchPlayers(); // Perform an initial fetch
 
-  // if (resp.error) {
-  //   return (
-  //     <>
-  //       <NotFoundPage />
-  //     </>
-  //   );
-  // }
+    return () => {
+      clearInterval(intervalId); // Clean up the interval on component unmount
+    };
+  }, []);
 
-  // if (resp.status === 'inactive') {
-  //   return (
-  //     <>
-  //       <h1>Game has finished</h1>
-  //     </>
-  //   );
-  // }
+  const handleStartGame = () => {
+    // TODO
+    // apiRequest('POST', `/admin/quiz/${quizId}/start`);
+  };
 
-  // if (resp.position === -1) {
-  //   return (
-  //     <>
-  //       <h1>Lobby Page</h1>
-  //     </>
-  //   );
-  // }
+  if (loading) {
+    return <LoadingPage />;
+  }
 
   return (
-    <>
-    </>
+    <div className="bg-sky-100 min-h-screen flex flex-col content-center">
+      <Navbar />
+      <div className="container mx-auto px-4 sm:max-w-sm bg-sky-100 min-h-screen">
+        <div className="text-center mt-[100px]">
+          <Button
+            variant="contained"
+            color="primary"
+            startIcon={<PlayArrow />}
+            onClick={handleStartGame}
+            disabled={players.length === 0}
+          >
+            Start Quiz
+          </Button>
+        </div>
+        <div className="text-center mt-6 mb-4">
+          <Typography variant="h4" component="h2">
+            Players
+          </Typography>
+        </div>
+        <List className="mt-4 grid grid-cols-2 gap-1">
+          {players.map((player, index) => (
+            <div key={index} className="justify-center p-1">
+              <Card>
+                <CardContent>
+                  <Typography variant="body2" align="center">
+                    {player}
+                  </Typography>
+                </CardContent>
+              </Card>
+            </div>
+          ))}
+        </List>
+      </div>
+    </div>
   );
 };
 
