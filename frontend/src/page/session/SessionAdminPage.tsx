@@ -22,7 +22,6 @@ const SessionAdminPage: React.FC = () => {
   useEffect(() => {
     const fetchPlayers = async () => {
       const response = await apiRequest('GET', `/admin/session/${sessionId}/status`);
-      console.log(response);
       setPlayers(response.results.players);
       setLoading(false);
     };
@@ -60,6 +59,11 @@ const SessionAdminPage: React.FC = () => {
           >
             Start Quiz
           </Button>
+        </div>
+        <div className="text-center mt-6 mb-4">
+          <Typography variant="h5" component="h2">
+            Join the quiz by code {sessionId}
+          </Typography>
         </div>
         <div className="text-center mt-6 mb-4">
           <Typography variant="h4" component="h2">
