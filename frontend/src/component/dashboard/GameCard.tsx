@@ -53,10 +53,11 @@ const GameCard: React.FC<{
       const response = await apiRequest('GET', `/admin/quiz/${id}`, { id });
       if (response.active) {
         setIsGameStarted(true);
+        setSessionId(response.active);
       }
     };
     getQuizStatus();
-  }, [isGameStarted]);
+  }, [isGameStarted, sessionId]);
 
   const startGameSession = async () => {
     await apiRequest('POST', `/admin/quiz/${id}/start`, { id });
@@ -64,6 +65,16 @@ const GameCard: React.FC<{
     setSessionId(resp.active);
     setIsGameStarted(true);
     setShowNewGameModal(true);
+  };
+
+  const stopGameSession = async () => {
+    await apiRequest('POST', `/admin/quiz/${id}/end`, { id });
+    setIsGameStarted(false);
+    setSessionId(null);
+  };
+
+  const handleSessionIdClick = () => {
+    navigate(`/game/${sessionId}`);
   };
 
   // Default
@@ -110,6 +121,13 @@ const GameCard: React.FC<{
               </Typography>
           </div>
         </CardContent>
+        {sessionId && (
+          <CardContent onClick={handleSessionIdClick} style={{ cursor: 'pointer' }} >
+            <div className="bg-gray-100 p-2 rounded-lg flex justify-center">
+              Session ID: {sessionId}
+            </div>
+          </CardContent>
+        )}
         <CardActions>
           <WhiteButton text="EDIT" onClick={() => {
             navigate(`/game/edit/${id}`);
@@ -121,10 +139,7 @@ const GameCard: React.FC<{
             <WhiteButton text="START" onClick={startGameSession} />
           )}
           {isGameStarted && (
-            <RedButton text="STOP" onClick={ async () => {
-              await apiRequest('POST', `/admin/quiz/${id}/end`, { id });
-              setIsGameStarted(false);
-            }} />
+            <RedButton text="STOP" onClick={stopGameSession} />
           )}
         </CardActions>
       </Card>
