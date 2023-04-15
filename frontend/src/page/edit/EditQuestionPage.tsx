@@ -10,9 +10,17 @@ import ButtonGreen from '../../component/dashboard/ButtonGreen';
 import { isMobileWidth, isDesktopWidth } from '../../util/media';
 import Input from '@mui/material/Input';
 import Checkbox from '@mui/material/Checkbox';
-import { Grid } from '@mui/material';
-import { DeleteOutline } from '@mui/icons-material';
+import Grid from '@mui/material/Grid';
+import DeleteOutline from '@mui/icons-material/DeleteOutline';
 import EditFormControl from '../../component/edit/EditFormControl';
+import { uid } from 'uid';
+import AuthErrorPopup from '../../component/auth/AuthErrorPopup';
+
+interface Answer {
+  id: string;
+  content: string;
+  isCorrect: boolean;
+}
 
 interface Question {
   id: string;
@@ -21,7 +29,7 @@ interface Question {
   type: 'single' | 'multiple';
   timeLimit: number;
   points: number;
-  answers: Array<{ answer: string }>;
+  answers: Array<{ answer: Answer }>;
 }
 
 interface GameApiResponse extends ApiResponse {
@@ -38,6 +46,8 @@ const EditQuestionPage: React.FC<{ qId: string, gameId: string }> = ({ qId, game
   const [type, setType] = useState('');
   const [time, setTime] = useState('');
   const [point, setPoint] = useState('');
+  const [isMaxAnswers, setIsMaxAnswers] = useState(false);
+  const [Contents, setContents] = useState(new Map<string, string>());
 
   const types = new Map([
     ['Multi-Select', 'multi'],
@@ -94,20 +104,68 @@ const EditQuestionPage: React.FC<{ qId: string, gameId: string }> = ({ qId, game
     );
   }
 
-  const addHandler = () => {
-    console.log('Add button clicked');
+  const addAnswerHandler = () => {
+    setIsMaxAnswers(false);
+    const aId = `answer-${uid()}`;
+    const answers = getQuestionInfo().answers;
+    console.log(answers.length);
+    console.log(isMaxAnswers);
+    if (answers.length === 6) {
+      setIsMaxAnswers(true);
+      return;
+    }
+    answers.push({
+      answer: {
+        id: aId,
+        content: '',
+        isCorrect: false,
+      },
+    });
+    setResp({ ...resp });
+    apiRequest('PUT', `/admin/quiz/${gameId}/`, resp);
+  }
+
+  const deleteAnswerHandler = (id: string) => {
+    const newAnswers = getQuestionInfo().answers.filter((obj) => obj.answer.id !== id);
+    resp.questions.find((obj) => obj.question.id === qId).question.answers = newAnswers;
+    setResp({ ...resp });
+    apiRequest('PUT', `/admin/quiz/${gameId}/`, resp);
   }
 
   const saveHandler = () => {
-    console.log('Save button clicked');
+    console.log(Contents);
+    const answers = getQuestionInfo().answers;
+    answers.forEach((obj) => {
+      Contents.forEach((value, key) => {
+        if (obj.answer.id === key) {
+          obj.answer.content = value;
+          resp.questions.find((obj) => obj.question.id === qId).question.answers = answers;
+          setResp({ ...resp });
+        }
+      });
+    });
+    apiRequest('PUT', `/admin/quiz/${gameId}/`, resp);
   }
 
-  const selectHandler = () => {
-    console.log('Checkbox clicked');
-  }
+  // const inputHandler = (id: string, value: string) => {
+  //   const answers = getQuestionInfo().answers;
+  //   answers.forEach((obj) => {
+  //     if (obj.answer.id === id) {
+  //       obj.answer.content = value;
+  //     }
+  //   });
+  //   resp.questions.find((obj) => obj.question.id === qId).question.answers = answers;
+  // }
 
-  const deleteHandler = () => {
-    console.log('Delete button clicked');
+  const checkboxHandler = (id: string) => {
+    const answers = getQuestionInfo().answers;
+    answers.forEach((obj) => {
+      if (obj.answer.id === id) {
+        obj.answer.isCorrect = !obj.answer.isCorrect;
+      }
+    });
+    resp.questions.find((obj) => obj.question.id === qId).question.answers = answers;
+    setResp({ ...resp });
   }
 
   return (
@@ -133,8 +191,8 @@ const EditQuestionPage: React.FC<{ qId: string, gameId: string }> = ({ qId, game
                 />
               </div>
               <div className="flex flex-col justify-evenly items-center py-4 mt-10">
-                <ButtonGreen text="Add" onClick={addHandler} />
-                <ButtonBlue text="Save" onClick={saveHandler} />
+                <ButtonGreen text="Add" onClick={() => addAnswerHandler()} />
+                <ButtonBlue text="Save" onClick={() => saveHandler()} />
               </div>
             </div>
 
@@ -143,19 +201,22 @@ const EditQuestionPage: React.FC<{ qId: string, gameId: string }> = ({ qId, game
               <Grid container
                 spacing={{ xs: 2, sm: 3, md: 4, lg: 5, xl: 6, xxl: 6 }}
                 columnSpacing={{ xs: 2, sm: 3, md: 4, lg: 5, xl: 6, xxl: 6 }}>
-                {Array.from({ length: 6 }).map((_, index) => (
-                  <Grid item xs={12} sm={6} md={6} lg={6} xl={6} key={index}>
-                    <div className="flex flex-row justify-center
-                                        sm:mt-8 md:mt-10">
-                      <Input placeholder="Put answer" />
-                      <Checkbox onChange={selectHandler} />
-                      <DeleteOutline
-                        className='cursor-pointer mt-[9px] ml-[-4px]'
-                        onClick={deleteHandler}
-                        color='primary' />
-                    </div>
-                  </Grid>
-                ))}
+                {getQuestionInfo().answers.map((obj, index) => {
+                  if (!obj.answer) return null;
+                  return (
+                    <Grid item xs={12} sm={6} md={6} lg={6} xl={6} key={index}>
+                      <div className="flex flex-row justify-center
+                                          sm:mt-8 md:mt-10">
+                        <Input placeholder="Put answer" value={Contents.get(obj.answer.id)} onChange={(e) => Contents.set(obj.answer.id, e.target.value)} />
+                        <Checkbox checked={obj.answer.isCorrect} onChange={() => checkboxHandler(obj.answer.id)} />
+                        <DeleteOutline
+                          className='cursor-pointer mt-[9px] ml-[-4px]'
+                          onClick={() => deleteAnswerHandler(obj.answer.id)}
+                          color='primary' />
+                      </div>
+                    </Grid>
+                  );
+                })}
               </Grid>
             </div>
           </div>
@@ -180,7 +241,7 @@ const EditQuestionPage: React.FC<{ qId: string, gameId: string }> = ({ qId, game
                   />
                 </div>
                 <div className="flex flex-col justify-evenly items-center py-4 mt-10">
-                  <ButtonGreen text="Add" onClick={addHandler} />
+                  <ButtonGreen text="Add" onClick={addAnswerHandler} />
                   <ButtonBlue text="Save" onClick={saveHandler} />
                 </div>
               </div>
@@ -195,10 +256,10 @@ const EditQuestionPage: React.FC<{ qId: string, gameId: string }> = ({ qId, game
                       <div className="flex flex-row justify-center
                                       sm:mt-[2px] md:mt-[15px]">
                         <Input className='lg:w-[200px] xl:w-[250px] 2xl:w-[275px]' placeholder="Put answer" />
-                        <Checkbox onChange={selectHandler} />
+                        {/* <Checkbox onChange={selectHandler} /> */}
                         <DeleteOutline
                           className='cursor-pointer mt-[9px] ml-[-4px]'
-                          onClick={deleteHandler}
+                          // onClick={() => deleteAnswerHandler()}
                           color='primary' />
                       </div>
                     </Grid>
@@ -223,6 +284,7 @@ const EditQuestionPage: React.FC<{ qId: string, gameId: string }> = ({ qId, game
           </div>
         </>
       )}
+      {isMaxAnswers && <AuthErrorPopup error={'Maximum number of answers is 6'} />}
     </>
   );
 };
