@@ -53,7 +53,8 @@ const EditButtonDrawer: React.FC = () => {
       <form className="flex flex-col justify-center items-center h-screen">
         <span className="my-[4%]" />
         <h6 className="text-center">Question Type</h6>
-        <EditFormControl select={type} setSelect={setType} options={types} />
+        <EditFormControl select={type} setSelect={setType} options={types}
+        />
         <span className="my-[4%]" />
         <h6 className="text-center">Time Limit</h6>
         <EditFormControl select={time} setSelect={setTime} options={times} />

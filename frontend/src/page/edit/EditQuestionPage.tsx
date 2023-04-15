@@ -15,6 +15,7 @@ import DeleteOutline from '@mui/icons-material/DeleteOutline';
 import EditFormControl from '../../component/edit/EditFormControl';
 import { uid } from 'uid';
 import AuthErrorPopup from '../../component/auth/AuthErrorPopup';
+import { TextField } from '@mui/material';
 
 interface Answer {
   id: string;
@@ -48,6 +49,7 @@ const EditQuestionPage: React.FC<{ qId: string, gameId: string }> = ({ qId, game
   const [point, setPoint] = useState('');
   const [isMaxAnswers, setIsMaxAnswers] = useState(false);
   const [Contents, setContents] = useState(new Map<string, string>());
+  const [title, setTitle] = useState('');
 
   const types = new Map([
     ['Multi-Select', 'multi'],
@@ -108,8 +110,6 @@ const EditQuestionPage: React.FC<{ qId: string, gameId: string }> = ({ qId, game
     setIsMaxAnswers(false);
     const aId = `answer-${uid()}`;
     const answers = getQuestionInfo().answers;
-    console.log(answers.length);
-    console.log(isMaxAnswers);
     if (answers.length === 6) {
       setIsMaxAnswers(true);
       return;
@@ -133,29 +133,23 @@ const EditQuestionPage: React.FC<{ qId: string, gameId: string }> = ({ qId, game
   }
 
   const saveHandler = () => {
-    console.log(Contents);
-    const answers = getQuestionInfo().answers;
-    answers.forEach((obj) => {
-      Contents.forEach((value, key) => {
-        if (obj.answer.id === key) {
-          obj.answer.content = value;
-          resp.questions.find((obj) => obj.question.id === qId).question.answers = answers;
-          setResp({ ...resp });
-        }
-      });
-    });
+    const question = getQuestionInfo();
+    question.title = title;
+    resp.questions.find((obj) => obj.question.id === qId).question = question;
+    setResp({ ...resp });
+    // console.log(Contents);
+    // const answers = getQuestionInfo().answers;
+    // answers.forEach((obj) => {
+    //   Contents.forEach((value, key) => {
+    //     if (obj.answer.id === key) {
+    //       obj.answer.content = value;
+    //       resp.questions.find((obj) => obj.question.id === qId).question.answers = answers;
+    //       setResp({ ...resp });
+    //     }
+    //   });
+    // });
     apiRequest('PUT', `/admin/quiz/${gameId}/`, resp);
   }
-
-  // const inputHandler = (id: string, value: string) => {
-  //   const answers = getQuestionInfo().answers;
-  //   answers.forEach((obj) => {
-  //     if (obj.answer.id === id) {
-  //       obj.answer.content = value;
-  //     }
-  //   });
-  //   resp.questions.find((obj) => obj.question.id === qId).question.answers = answers;
-  // }
 
   const checkboxHandler = (id: string) => {
     const answers = getQuestionInfo().answers;
@@ -180,13 +174,16 @@ const EditQuestionPage: React.FC<{ qId: string, gameId: string }> = ({ qId, game
             </div>
 
             {/* Title & Buttons */}
-            <div className="flex flex-row justify-evenly mt-[-25px]">
+            <div className="flex flex-row justify-evenly mt-[-20px]">
               <div className="flex flex-col justify-center items-center">
-                <Typography variant="h6" component="h6" gutterBottom color={'primary'}>
-                  {getQuestionInfo().title}
-                </Typography>
+                <TextField
+                type="text"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder={getQuestionInfo().title}
+                label="Title" color="secondary" focused />
                 <img
-                  className='w-[150px] h-[150px] object-cover rounded-[10px]'
+                  className='w-[150px] h-[150px] object-cover rounded-[10px] mt-4'
                   src={getQuestionInfo().media} // TODO: Add video support
                 />
               </div>
@@ -197,7 +194,7 @@ const EditQuestionPage: React.FC<{ qId: string, gameId: string }> = ({ qId, game
             </div>
 
             {/* Answers */}
-            <div className="max-w-[500px] mx-auto mt-12">
+            <div className="max-w-[500px] mx-auto mt-4">
               <Grid container
                 spacing={{ xs: 2, sm: 3, md: 4, lg: 5, xl: 6, xxl: 6 }}
                 columnSpacing={{ xs: 2, sm: 3, md: 4, lg: 5, xl: 6, xxl: 6 }}>
@@ -205,7 +202,7 @@ const EditQuestionPage: React.FC<{ qId: string, gameId: string }> = ({ qId, game
                   if (!obj.answer) return null;
                   return (
                     <Grid item xs={12} sm={6} md={6} lg={6} xl={6} key={index}>
-                      <div className="flex flex-row justify-center
+                      <div className="flex flex-row justify-center min-w-[250px]
                                           sm:mt-8 md:mt-10">
                         <Input placeholder="Put answer" value={Contents.get(obj.answer.id)} onChange={(e) => Contents.set(obj.answer.id, e.target.value)} />
                         <Checkbox checked={obj.answer.isCorrect} onChange={() => checkboxHandler(obj.answer.id)} />
