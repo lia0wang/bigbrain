@@ -15,8 +15,8 @@ const Router: React.FC = () => {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
         <Route path="/game/edit/" element={<EditGamePage />}>
-          <Route path=":gameId"/>
-          <Route path=":gameId/:questionNo" />
+          <Route path=":gameId" />
+          <Route path=":gameId/:questionId" />
         </Route>
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
