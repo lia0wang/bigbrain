@@ -22,7 +22,7 @@ const NewGameModal: React.FC<NewGameModalProps> = ({ gameTitle, onClose, session
     <div className="fixed top-0 left-0 w-full h-full bg-gray-500 bg-opacity-50 flex items-center justify-center">
       <div className="bg-white p-8 rounded-md shadow-lg w-[370px]">
         <h2 className="text-2xl mb-4 text-center">{gameTitle} Session ID</h2>
-        <div className="bg-gray-100 p-2 rounded-lg mb-4">
+        <div className="bg-gray-100 p-2 rounded-lg mb-4 flex justify-center">
           <code className="text-xl">{sessionId}</code>
         </div>
         <div className="flex flex-row justify-around">

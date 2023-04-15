@@ -8,7 +8,7 @@ import WhiteButton from './ButtonWhite';
 import apiRequest from '../../util/api';
 import { useNavigate } from 'react-router-dom';
 import RedButton from './ButtonRed';
-import NewGameModal from '../../modal/NewGameModal';
+import NewGameModal from '../../modal/NewSessionModal';
 
 const GameCard: React.FC<{
   title: string;
