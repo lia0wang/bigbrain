@@ -5,8 +5,8 @@ import RegisterPage from './page/auth/RegisterPage';
 import DashboardPage from './page/DashboardPage';
 import EditGamePage from './page/edit/EditGamePage';
 import NotFoundPage from './page/NotFoundPage';
-import SessionPlayerPage from './page/game/SessionPlayerPage';
-import SessionAdminPage from './page/game/SessionAdminPage';
+import SessionPlayerPage from './page/session/SessionPlayerPage';
+import SessionAdminPage from './page/session/SessionAdminPage';
 
 const Router: React.FC = () => {
   return (

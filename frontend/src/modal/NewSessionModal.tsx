@@ -51,11 +51,11 @@ const NewGameModal: React.FC<NewGameModalProps> = ({ gameTitle, onClose, session
         </div>
         <div className="flex flex-row justify-around mt-2">
           <button
-            className="bg-yellow-500 hover:bg-yellow-400 text-white font-bold py-2 px-4 w-[200px]
+            className="bg-yellow-500 hover:bg-yellow-400 text-white font-bold py-2 px-4 w-[300px]
                         border-b-4 border-yellow-700 hover:border-yellow-500 rounded"
             type="button"
             onClick={goToSessionAdminPage}>
-            GO TO ADMIN PAGE
+            GO TO SESSION ADMIN PAGE
           </button>
       </div>
       </div>
