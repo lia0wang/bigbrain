@@ -22,7 +22,7 @@ import LoadingPage from '../LoadingPage';
 //   questions: Array<{ question: Question }>; // Define the question structure as needed
 // }
 
-const GamePage: React.FC = () => {
+const SessionPage: React.FC = () => {
   const { sessionId } = useParams();
   console.log(sessionId);
   // if questionId is defined, return GameQuestionEditPage
@@ -77,8 +77,11 @@ const GamePage: React.FC = () => {
 
   return (
     <>
+      <h1>Lobby</h1>
+      <h1>Please Wait Game to Start</h1>
+      <p>Play the little game while waiting :)</p>
     </>
   );
 };
 
-export default GamePage;
+export default SessionPage;

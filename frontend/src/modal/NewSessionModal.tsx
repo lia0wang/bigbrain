@@ -1,6 +1,7 @@
 import React from 'react';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import { FRONT_END_URL } from '../config';
+import { useNavigate } from 'react-router-dom';
 
 interface NewGameModalProps {
   gameTitle: string;
@@ -14,6 +15,12 @@ const NewGameModal: React.FC<NewGameModalProps> = ({ gameTitle, onClose, session
   const handleCopy = () => {
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2000);
+  };
+
+  const navigate = useNavigate();
+  // Navigate to page admin/session/:sessionId
+  const goToSessionAdminPage = () => {
+    navigate(`/admin/session/${sessionId}`);
   };
 
   const urlWithSessionId = `${FRONT_END_URL}/session/${sessionId}`;
@@ -42,6 +49,15 @@ const NewGameModal: React.FC<NewGameModalProps> = ({ gameTitle, onClose, session
             Close
           </button>
         </div>
+        <div className="flex flex-row justify-around mt-2">
+          <button
+            className="bg-yellow-500 hover:bg-yellow-400 text-white font-bold py-2 px-4 w-[200px]
+                        border-b-4 border-yellow-700 hover:border-yellow-500 rounded"
+            type="button"
+            onClick={goToSessionAdminPage}>
+            GO TO ADMIN PAGE
+          </button>
+      </div>
       </div>
     </div>
   );
