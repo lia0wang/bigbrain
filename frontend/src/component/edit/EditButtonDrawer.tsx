@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 
 import Box from '@mui/material/Box';
 import Drawer from '@mui/material/Drawer';
-import Button from '@mui/material/Button';
 import EditFormControl from './EditFormControl';
+import { Fab } from '@mui/material';
+import AddIcon from '@mui/icons-material/Add';
 
 const EditButtonDrawer: React.FC = () => {
   const [state, setState] = useState({
-    right: true,
+    right: false,
   });
   const [type, setType] = useState('');
   const [time, setTime] = useState('');
@@ -49,7 +50,7 @@ const EditButtonDrawer: React.FC = () => {
       sx={{ width: 250 }}
       onKeyDown={toggleDrawer(false)}
     >
-      <form className="flex flex-col justify-center items-center h-screen pb-20">
+      <form className="flex flex-col justify-center items-center h-screen">
         <span className="my-[4%]" />
         <h6 className="text-center">Question Type</h6>
         <EditFormControl select={type} setSelect={setType} options={types} />
@@ -60,9 +61,6 @@ const EditButtonDrawer: React.FC = () => {
         <h6 className="text-center">Points</h6>
         <EditFormControl select={point} setSelect={setPoint} options={points} />
         <span className="my-[4%]" />
-        <Button variant="contained" onClick={toggleDrawer(false)}>
-          Save
-        </Button>
       </form>
     </Box>
   );
@@ -70,13 +68,11 @@ const EditButtonDrawer: React.FC = () => {
   return (
     <>
       <div>
-        <button
-          className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 mx-2
-                 border-b-4 border-blue-800 hover:border-blue-700 rounded"
-          onClick={toggleDrawer(true)}
-        >
-          Edit
-        </button>
+        <Fab
+        onClick={toggleDrawer(true)}
+        size="small" color="primary" aria-label="add">
+          <AddIcon />
+        </Fab>
         <Drawer
           anchor={'right'}
           open={state.right}

@@ -3,20 +3,19 @@ import React, { useEffect, useState } from 'react';
 import Navbar from '../../component/dashboard/Navbar';
 import apiRequest, { ApiResponse } from '../../util/api';
 import LoadingPage from '../LoadingPage';
-import EditQuestionPage from './EditQuestionPage';
 import NotFoundPage from '../NotFoundPage';
 import { uid } from 'uid';
-import { Alarm } from '@mui/icons-material';
+import EditQuestionPage from './EditQuestionPage';
 import { fileToDataUrl, resizeImage } from '../../util/imageHandler';
 
 interface Question {
-  id: string; // The question ID
-  title: string; // The question itself
-  type: 'single' | 'multiple'; // The question type (multiple choice, single choice)
+  id: string;
+  title: string;
+  media: string;
+  type: 'single' | 'multiple';
   timeLimit: number;
   points: number;
-  answers: Array<{ answer: string }>; // Anywhere between 2 and 6 answers, that each contain the answer as a string
-  videoURL?: string; // The ability to optionally attach a URL to a youtube video, or upload a photo, to enhance the question being asked).
+  answers: Array<{ answer: string }>;
 }
 
 interface GameApiResponse extends ApiResponse {
@@ -28,10 +27,10 @@ interface GameApiResponse extends ApiResponse {
 }
 
 const EditGamePage: React.FC = () => {
-  const { gameId, questionNo } = useParams();
-  // if questionNo is defined, return GameQuestionEditPage
-  if (questionNo) {
-    return <EditQuestionPage qNo={questionNo} />;
+  const { gameId, questionId } = useParams();
+  // if questionId is defined, return GameQuestionEditPage
+  if (questionId) {
+    return <EditQuestionPage qId={questionId} gameId={gameId} />;
   }
 
   const navigate = useNavigate();
@@ -77,7 +76,6 @@ const EditGamePage: React.FC = () => {
   };
 
   const deleteQuestion = (qid: string) => {
-    console.log('Delete question', qid);
     const newQuestions = resp.questions.filter((obj) => obj.question.id !== qid);
     resp.questions = newQuestions;
     setResp({ ...resp });
@@ -86,15 +84,15 @@ const EditGamePage: React.FC = () => {
 
   const addQuestion = () => {
     const qId = `question-${uid()}`;
-    console.log('Add question', qId);
     resp.questions.push({
       question: {
         id: qId,
-        title: 'New Question',
+        title: 'Default Question Title',
+        media: 'https://cdn.dribbble.com/userupload/4487190/file/original-d4c3ba33335a133315f0e2dca0332649.png?compress=1&resize=752x',
         type: 'single',
-        timeLimit: 10,
-        points: 10,
-        answers: [{ answer: '' }, { answer: '' }],
+        timeLimit: 5,
+        points: 100,
+        answers: [],
       },
     });
     setResp({ ...resp });
@@ -102,7 +100,6 @@ const EditGamePage: React.FC = () => {
   };
 
   const editQuestion = (qid: string) => {
-    // return <EditQuestionPage qNo={String(qid + 1)} />;
     navigate(`/game/edit/${gameId}/${qid}`);
   };
 
@@ -133,10 +130,10 @@ const EditGamePage: React.FC = () => {
           />
         </div>
         {gameThumbnail && (
-        <div className="mb-4 flex justify-center">
-          {/* <label className="block text-s font-medium text-gray-700">Thumbnail Preview</label> */}
-          <img src={gameThumbnail} alt="Thumbnail Preview" className="w-1/2 h-auto rounded-md shadow-sm" />
-        </div>
+          <div className="mb-4 flex justify-center">
+            {/* <label className="block text-s font-medium text-gray-700">Thumbnail Preview</label> */}
+            <img src={gameThumbnail} alt="Thumbnail Preview" className="w-1/2 h-auto rounded-md shadow-sm" />
+          </div>
         )}
         <div className="mb-4">
           <label htmlFor="gameThumbnail" className="block text-s font-medium text-gray-700">Game Thumbnail</label>
@@ -152,10 +149,9 @@ const EditGamePage: React.FC = () => {
         <div className="mt-3 flex justify-center">
           <button className="bg-green-500 text-white px-4 py-2 rounded" onClick={() => saveChanges()}>Save Changes</button>
         </div>
-          <h2 className="text-xl mt-8 mb-4">Questions</h2>
-          <ul>
+        <h2 className="text-xl mt-8 mb-4">Questions</h2>
+        <ul>
           {resp.questions.map((obj, index) => {
-            // console.log(obj);
             if (!obj || !obj.question) {
               return null;
             }
@@ -169,10 +165,10 @@ const EditGamePage: React.FC = () => {
               </li>
             );
           })}
-          </ul>
-          <div className="mt-2 flex justify-center">
-            <button className="bg-blue-500 text-white px-2 py-1 rounded mr-2" onClick={() => addQuestion()}>Add Question</button>
-          </div>
+        </ul>
+        <div className="mt-2 flex justify-center">
+          <button className="bg-blue-500 text-white px-2 py-1 rounded mr-2" onClick={() => addQuestion()}>Add Question</button>
+        </div>
       </div>
     </>
   );
