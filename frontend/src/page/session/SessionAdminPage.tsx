@@ -27,7 +27,7 @@ const SessionAdminPage: React.FC = () => {
       setLoading(false);
     };
 
-    const intervalId = setInterval(fetchPlayers, 5000);
+    const intervalId = setInterval(fetchPlayers, POLLING_INTERVAL);
 
     setLoading(true); // Set loading state before the initial fetch
     fetchPlayers(); // Perform an initial fetch
