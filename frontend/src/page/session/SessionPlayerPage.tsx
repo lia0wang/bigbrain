@@ -7,7 +7,6 @@ import { Button, Box, Container, Typography } from '@mui/material';
 
 const SessionPlayerPage: React.FC = () => {
   const { sessionId } = useParams();
-  console.log(sessionId);
   // if questionId is defined, return GameQuestionEditPage
   if (!sessionId) {
     return <NotFoundPage />;
@@ -38,8 +37,8 @@ const SessionPlayerPage: React.FC = () => {
     setIsRunning(true);
     setMessage('');
     timerRef.current = setInterval(() => {
-      setTimer((prevTimer) => prevTimer + 100);
-    }, 100);
+      setTimer((prevTimer) => prevTimer + 10);
+    }, 10);
   };
 
   const stopTimer = () => {
