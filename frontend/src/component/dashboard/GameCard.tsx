@@ -74,7 +74,7 @@ const GameCard: React.FC<{
   };
 
   const handleSessionIdClick = () => {
-    navigate(`/game/${sessionId}`);
+    navigate(`/session/${sessionId}`);
   };
 
   // Default

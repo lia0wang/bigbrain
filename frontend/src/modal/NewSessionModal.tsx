@@ -16,7 +16,7 @@ const NewGameModal: React.FC<NewGameModalProps> = ({ gameTitle, onClose, session
     setTimeout(() => setIsCopied(false), 2000);
   };
 
-  const urlWithSessionId = `${FRONT_END_URL}/game/${sessionId}`;
+  const urlWithSessionId = `${FRONT_END_URL}/session/${sessionId}`;
 
   return (
     <div className="fixed top-0 left-0 w-full h-full bg-gray-500 bg-opacity-50 flex items-center justify-center">
