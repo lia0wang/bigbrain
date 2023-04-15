@@ -22,7 +22,7 @@ import LoadingPage from '../LoadingPage';
 //   questions: Array<{ question: Question }>; // Define the question structure as needed
 // }
 
-const SessionPage: React.FC = () => {
+const SessionPlayerPage: React.FC = () => {
   const { sessionId } = useParams();
   console.log(sessionId);
   // if questionId is defined, return GameQuestionEditPage
@@ -84,4 +84,4 @@ const SessionPage: React.FC = () => {
   );
 };
 
-export default SessionPage;
+export default SessionPlayerPage;
