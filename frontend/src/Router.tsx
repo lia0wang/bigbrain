@@ -5,6 +5,8 @@ import RegisterPage from './page/auth/RegisterPage';
 import DashboardPage from './page/DashboardPage';
 import EditGamePage from './page/edit/EditGamePage';
 import NotFoundPage from './page/NotFoundPage';
+import SessionPlayerPage from './page/game/SessionPlayerPage';
+import SessionAdminPage from './page/game/SessionAdminPage';
 
 const Router: React.FC = () => {
   return (
@@ -14,6 +16,12 @@ const Router: React.FC = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/dashboard" element={<DashboardPage />} />
+        <Route path="/session/" element={<SessionPlayerPage />}>
+          <Route path=":sessionId" />
+        </Route>
+        <Route path="/admin/session/" element={<SessionAdminPage />}>
+          <Route path=":sessionId" />
+        </Route>
         <Route path="/game/edit/" element={<EditGamePage />}>
           <Route path=":gameId" />
           <Route path=":gameId/:questionId" />
