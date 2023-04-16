@@ -111,7 +111,7 @@ const SessionAdminPage: React.FC = () => {
             color="primary"
             startIcon={<PlayArrow />}
             onClick={handleAdvance}
-            disabled={players.length === 0}
+            // disabled={players.length === 0}
           >
             Start Quiz
           </Button>
@@ -148,7 +148,6 @@ const SessionAdminPage: React.FC = () => {
               color="primary"
               startIcon={<ArrowForwardIosIcon />}
               onClick={handleAdvance}
-              disabled={players.length === 0}
             >
               Skip The Question
             </Button>
