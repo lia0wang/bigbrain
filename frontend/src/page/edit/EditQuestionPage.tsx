@@ -51,7 +51,6 @@ const EditQuestionPage: React.FC<{ qId: string; gameId: string }> = ({
   const [time, setTime] = useState('');
   const [point, setPoint] = useState('');
   const [isMaxAnswers, setIsMaxAnswers] = useState(false);
-  const [Contents, setContents] = useState(new Map<string, string>());
   const [title, setTitle] = useState('');
   const [media, setMedia] = useState<string | null>(null);
   const [state, setState] = useState({
@@ -166,6 +165,14 @@ const EditQuestionPage: React.FC<{ qId: string; gameId: string }> = ({
         isCorrect: false,
       },
     });
+    setResp({ ...resp });
+    apiRequest('PUT', `/admin/quiz/${gameId}/`, resp);
+  };
+
+  const putAnswerHandler = (id: string, content: string) => {
+    const answers = getQuestionInfo().answers;
+    const answer = answers.find((obj) => obj.answer.id === id).answer;
+    answer.content = content;
     setResp({ ...resp });
     apiRequest('PUT', `/admin/quiz/${gameId}/`, resp);
   };
@@ -289,10 +296,8 @@ const EditQuestionPage: React.FC<{ qId: string; gameId: string }> = ({
                       >
                         <Input
                           placeholder="Put answer"
-                          value={Contents.get(obj.answer.id)}
-                          onChange={(e) =>
-                            Contents.set(obj.answer.id, e.target.value)
-                          }
+                          value={obj.answer.content}
+                          onChange={(e) => putAnswerHandler(obj.answer.id, e.target.value)}
                         />
                         <Checkbox
                           checked={obj.answer.isCorrect}
@@ -374,9 +379,7 @@ const EditQuestionPage: React.FC<{ qId: string; gameId: string }> = ({
                           <Input
                             placeholder="Put answer"
                             value={obj.answer.content}
-                            onChange={(e) =>
-                              Contents.set(obj.answer.content, e.target.value)
-                            }
+                            onChange={(e) => putAnswerHandler(obj.answer.id, e.target.value)}
                           />
                           <Checkbox
                             checked={obj.answer.isCorrect}
