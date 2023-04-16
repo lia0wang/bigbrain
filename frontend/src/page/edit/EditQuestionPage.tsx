@@ -166,7 +166,6 @@ const EditQuestionPage: React.FC<{ qId: string; gameId: string }> = ({
       },
     });
     setResp({ ...resp });
-    apiRequest('PUT', `/admin/quiz/${gameId}/`, resp);
   };
 
   const putAnswerHandler = (id: string, content: string) => {
@@ -174,7 +173,6 @@ const EditQuestionPage: React.FC<{ qId: string; gameId: string }> = ({
     const answer = answers.find((obj) => obj.answer.id === id).answer;
     answer.content = content;
     setResp({ ...resp });
-    apiRequest('PUT', `/admin/quiz/${gameId}/`, resp);
   };
 
   const deleteAnswerHandler = (id: string) => {
@@ -184,7 +182,6 @@ const EditQuestionPage: React.FC<{ qId: string; gameId: string }> = ({
     resp.questions.find((obj) => obj.question.id === qId).question.answers =
       newAnswers;
     setResp({ ...resp });
-    apiRequest('PUT', `/admin/quiz/${gameId}/`, resp);
   };
 
   const handleMediaChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
