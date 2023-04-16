@@ -3,10 +3,14 @@ import NotFoundPage from '../NotFoundPage';
 import apiRequest from '../../util/api';
 import React, { useEffect, useState } from 'react';
 import { POLLING_INTERVAL } from '../../config';
-import { Button, Card, CardContent, List, Typography } from '@mui/material';
+import { Button, Card, CardContent, Grid, IconButton, List, Typography } from '@mui/material';
 import { PlayArrow } from '@mui/icons-material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import Navbar from '../../component/dashboard/Navbar';
+import { isMobileWidth, isDesktopWidth } from '../../util/media';
+import Badge from '@mui/material/Badge';
+import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
+import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
 
 const SessionAdminPage: React.FC = () => {
   const { sessionId } = useParams();
@@ -23,6 +27,21 @@ const SessionAdminPage: React.FC = () => {
   const [pollPlayerIntervalId, setPollPlayerIntervalId] = useState(null);
   const [questionNo, setQuestionNo] = useState(null);
   const [totalQuestion, setTotalQuestion] = useState(null);
+  const [deviceType, setDeviceType] = useState('');
+  const [title, setTitle] = useState('');
+  const [media, setMedia] = useState('');
+  const [answers, setAnswers] = useState([]);
+  const [timeLimit, setTimeLimit] = useState(0);
+  let colorIndex = 0;
+
+  const colors = [
+    'bg-blue-500',
+    'bg-yellow-400',
+    'bg-green-500',
+    'bg-red-500',
+    'bg-purple-500',
+    'bg-pink-500',
+  ];
 
   if (!sessionId) {
     return <NotFoundPage />;
@@ -32,6 +51,18 @@ const SessionAdminPage: React.FC = () => {
     const response = await apiRequest('GET', `/admin/session/${sessionId}/status`);
     setPlayers(response.results.players);
   };
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (isMobileWidth()) setDeviceType('mobile');
+      else if (isDesktopWidth()) setDeviceType('desktop');
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const fetchPosition = async () => {
@@ -44,7 +75,6 @@ const SessionAdminPage: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    console.log(position);
     if (position === -1) { // waiting page
       const intervalId = setInterval(async () => {
         await fetchPlayers();
@@ -67,9 +97,7 @@ const SessionAdminPage: React.FC = () => {
       const response = await apiRequest('GET', `/admin/quiz/${quizId}`);
       setQuestionList(response.questions);
       setTotalQuestion(response.questions.length)
-      console.log(questionList);
     };
-    console.log(quizId);
     if (quizId) {
       fetchQuestions(); // Perform an initial fetch of question list
     } else {
@@ -80,90 +108,242 @@ const SessionAdminPage: React.FC = () => {
   useEffect(() => {
     if (position >= 0 && questionList) {
       if (questionList[position] == null) {
-        console.log('questionList[position] is null');
         setShowQuestionPage(false);
         setShowResultPage(true);
       } else {
         setQuestionNo(position + 1);
         setCurrentQuestion(questionList[position]);
-        console.log(questionList[position]);
+        setTitle(questionList[position].question.title);
+        setMedia(questionList[position].question.media);
+        setAnswers(questionList[position].question.answers);
+        setTimeLimit(questionList[position].question.timeLimit);
       }
     }
   }, [position, questionList]); // Run the effect when position or questionList changes, new question will be set
 
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (timeLimit > 0) {
+      timer = setTimeout(() => {
+        setTimeLimit(timeLimit - 1);
+      }, 1000);
+    } else {
+      handleAdvance();
+    }
+    return () => clearTimeout(timer);
+  }, [timeLimit]);
+
   const handleAdvance = async () => {
     const resp = await apiRequest('POST', `/admin/quiz/${quizId}/advance`, { quizId });
-    console.log(resp);
     setPosition(resp.stage);
     pollPlayerIntervalId && clearInterval(pollPlayerIntervalId);
+  };
+
+  const renderColorAnswer = (text: string) => {
+    const color = colors[colorIndex];
+    colorIndex = (colorIndex + 1) % colors.length;
+    return (
+      <div className={`${color} text-black rounded-lg shadow-xl
+                      flex justify-start items-center
+                      py-2 px-6 min-w-[250px] min-h-[48px]
+                      md:py-3 lg:py-4
+                      md:min-w-[300px] lg:min-w-[350px] xl:min-w-[400px]
+                      `}>
+        <h1 className="font-medium text-md">
+          {text}
+        </h1>
+    </div>
+    );
   };
 
   return (
     <div className="bg-sky-100 min-h-screen flex flex-col content-center">
       <Navbar />
-      {showWaitingPage && (<div className="container mx-auto px-4 sm:max-w-sm bg-sky-100 min-h-screen">
-        <div className="text-center mt-[100px] mb-4">
-          <Typography variant="h4" component="h2">
-            Quiz: {gameTitle}
-          </Typography>
-        </div>
-        <div className="text-center mt-6">
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<PlayArrow />}
-            onClick={handleAdvance}
-            // disabled={players.length === 0}
-          >
-            Start Quiz
-          </Button>
-        </div>
-        <div className="text-center mt-6 mb-4">
-          <Typography variant="h5" component="h2">
-            Join the quiz by code {sessionId}
-          </Typography>
-        </div>
-        <div className="text-center mt-6 mb-4">
-          <Typography variant="h4" component="h2">
-            Players
-          </Typography>
-        </div>
-        <List className="mt-4 grid grid-cols-2 gap-1">
-          {players.map((player, index) => (
-            <div key={index} className="justify-center p-1">
-              <Card>
-                <CardContent>
-                  <Typography variant="body2" align="center">
-                    {player}
-                  </Typography>
-                </CardContent>
-              </Card>
-            </div>
-          ))}
-        </List>
-      </div>)}
-      {showQuestionPage && (
+      {showWaitingPage && (
+        <>
         <div className="container mx-auto px-4 sm:max-w-sm bg-sky-100 min-h-screen">
-          <div className="text-center mt-[85px]">
+          <div className="text-center mt-[100px] mb-4">
+            <Typography variant="h4" component="h2">
+              Quiz: {gameTitle}
+            </Typography>
+          </div>
+          <div className="text-center mt-6">
             <Button
               variant="contained"
               color="primary"
-              startIcon={<ArrowForwardIosIcon />}
+              startIcon={<PlayArrow />}
               onClick={handleAdvance}
             >
-              Skip The Question
+              Start Quiz
             </Button>
           </div>
-          <div className="text-center mt-3 mb-4">
-          <Typography variant="h5" component="h2">
-            Question {questionNo} / {totalQuestion}
-          </Typography>
+          <div className="text-center mt-6 mb-4">
+            <Typography variant="h5" component="h2">
+              Join the quiz by code {sessionId}
+            </Typography>
+          </div>
+          <div className="text-center mt-6 mb-4">
+            <Typography variant="h4" component="h2">
+              Players
+            </Typography>
+          </div>
+          <List className="mt-4 grid grid-cols-2 gap-1">
+            {players.map((player, index) => (
+              <div key={index} className="justify-center p-1">
+                <Card>
+                  <CardContent>
+                    <Typography variant="body2" align="center">
+                      {player}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </div>
+            ))}
+          </List>
         </div>
-          <pre>{JSON.stringify(currentQuestion, null, 2)}</pre>
-        </div>
+        </>
+      )}
+
+      {showQuestionPage && (
+        (deviceType === 'mobile' && (
+        <>
+          <Navbar pageType="EditQuestion" />
+            <div className="bg-sky-100 w-screen flex flex-col mt-24 md:mt-24 lg:mt-24">
+              <div className="flex flex-row justify-evenly items-center">
+                <div className="flex flex-col items-center py-4 mt-10">
+                <Badge badgeContent={timeLimit} color="secondary">
+                  <AccessTimeFilledIcon color='primary' fontSize='large' />
+                </Badge>
+                </div>
+                {/* Title & Buttons */}
+                <div className="flex flex-row justify-evenly">
+                  <div className="flex flex-col justify-center items-center">
+                  <div className="bg-nav-blue text-black py-2 px-4 rounded-lg max-w-[400px] shadow-xl">
+                    <h1 className="mt-[1%] text-md font-medium
+                                  lg:mt-0 lg:mb-0 2xl:mt-[2%]">
+                      {title}
+                    </h1>
+                  </div>
+                    <img
+                      className="w-[150px] h-[150px]
+                      sm:w-[220px] sm:h-[220px]
+                      object-cover rounded-lg mt-4"
+                      src={media} // TODO: Add video support
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col items-center py-4 mt-10">
+                  <IconButton onClick={handleAdvance}>
+                    <ArrowCircleRightIcon color='primary' fontSize='large' />
+                  </IconButton>
+                </div>
+              </div>
+              {/* Answers */}
+              <div className="mx-auto mt-[20px] lg:mt-[30px]">
+                <Grid
+                  container
+                  spacing={{ xs: 2, sm: 3, md: 4, lg: 5, xl: 6, xxl: 6 }}
+                  columnSpacing={{ xs: 2, sm: 3, md: 4, lg: 5, xl: 6, xxl: 6 }}
+                >
+                  {answers.map((obj: { answer: { content: unknown; isCorrect: boolean; }; }, index: React.Key) => {
+                    if (!obj.answer) return null;
+                    return (
+                      <Grid
+                        item
+                        xs={12}
+                        sm={6}
+                        md={6}
+                        lg={6}
+                        xl={6}
+                        key={index}
+                      >
+                        <div
+                          className="flex flex-row justify-center min-w-[250px]
+                                            sm:mt-8 md:mt-4 lg:mt-4"
+                        >
+                          {renderColorAnswer(obj.answer.content as string)}
+                        </div>
+                      </Grid>
+                    );
+                  })}
+                </Grid>
+              </div>
+            </div>
+          </>
+        )) ||
+        (deviceType === 'desktop' && (
+          <>
+            <Navbar pageType="EditQuestion" />
+            <div className="bg-sky-100 w-screen flex flex-col md:mt-24 lg:mt-24 xl:mt-24">
+              <div className="flex flex-row justify-evenly items-center">
+                <div className="flex flex-col items-center py-4 mt-10">
+                <Badge badgeContent={timeLimit} color="secondary">
+                  <AccessTimeFilledIcon color='primary' fontSize='large' />
+                </Badge>
+                </div>
+                {/* Title & Buttons */}
+                <div className="flex flex-row justify-evenly">
+                  <div className="flex flex-col justify-center items-center">
+                  <div className="bg-nav-blue text-black py-2 px-4 rounded-lg max-w-[400px]">
+                    <h1 className="mt-[1%] text-md font-medium
+                                  lg:mt-0 lg:mb-0 2xl:mt-[2%]">
+                      {title}
+                    </h1>
+                  </div>
+                    <img
+                      className="md:w-[220px] md:h-[220px]
+                      object-cover rounded-lg mt-4"
+                      src={media} // TODO: Add video support
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-col items-center py-4 mt-10">
+                <Button
+                  variant="contained"
+                  color="primary"
+                  startIcon={<ArrowForwardIosIcon />}
+                  onClick={handleAdvance}
+                >
+                  Skip
+                </Button>
+                </div>
+              </div>
+              {/* Answers */}
+              <div className="mx-auto md:mt-[25px] lg:mt-[40px]">
+                <Grid
+                  container
+                  spacing={{ xs: 2, sm: 3, md: 4, lg: 5, xl: 6, xxl: 6 }}
+                  columnSpacing={{ xs: 2, sm: 3, md: 4, lg: 5, xl: 6, xxl: 6 }}
+                >
+                  {answers.map((obj: { answer: { content: unknown; isCorrect: boolean; }; }, index: React.Key) => {
+                    if (!obj.answer) return null;
+                    return (
+                      <Grid
+                        item
+                        xs={12}
+                        sm={6}
+                        md={6}
+                        lg={6}
+                        xl={6}
+                        key={index}
+                      >
+                        <div
+                          className="flex flex-row justify-center min-w-[250px]
+                                            sm:mt-8 md:mt-4 lg:mt-4"
+                        >
+                          {renderColorAnswer(obj.answer.content as string)}
+                        </div>
+                      </Grid>
+                    );
+                  })}
+                </Grid>
+              </div>
+            </div>
+          </>
+        ))
       )}
       {showResultPage && (<></>)}
-    </div>
+      </div>
   );
 };
 
