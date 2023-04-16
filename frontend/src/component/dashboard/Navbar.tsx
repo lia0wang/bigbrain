@@ -53,7 +53,7 @@ const Navbar: React.FC<{
               onClick={openCreateModal}
             />
           )}
-          {isLoggedIn ? (<AuthLogoutButton />) : (<AuthLoginButton />)}
+          {pageType !== 'None' && (isLoggedIn ? (<AuthLogoutButton />) : (<AuthLoginButton />))}
         </div>
       </div>
       {showCreateModal && (

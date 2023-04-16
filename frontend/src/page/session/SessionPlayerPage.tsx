@@ -58,7 +58,7 @@ const SessionPlayerPage: React.FC = () => {
 
   return (
     <>
-      <Navbar />
+      <Navbar pageType='None'/>
       <div className="bg-sky-100 min-h-screen flex flex-col content-center">
         {!playerId && (
           <EnterNameModal onConfirm={joinSessionWithName} />

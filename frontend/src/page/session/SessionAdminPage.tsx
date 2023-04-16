@@ -16,10 +16,13 @@ const SessionAdminPage: React.FC = () => {
   const [players, setPlayers] = useState([]);
   const [showWaitingPage, setShowWaitingPage] = useState(true);
   const [showQuestionPage, setShowQuestionPage] = useState(false);
+  const [showResultPage, setShowResultPage] = useState(false);
   const [position, setPosition] = useState(-1);
   const [questionList, setQuestionList] = useState(null);
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [pollPlayerIntervalId, setPollPlayerIntervalId] = useState(null);
+  const [questionNo, setQuestionNo] = useState(null);
+  const [totalQuestion, setTotalQuestion] = useState(null);
 
   if (!sessionId) {
     return <NotFoundPage />;
@@ -37,18 +40,22 @@ const SessionAdminPage: React.FC = () => {
         setPlayers(response.results.players);
       };
 
-      await fetchPosition();
-      await fetchPlayers();
-
-      if (position === -1) {
-        const intervalId = setInterval(fetchPlayers, POLLING_INTERVAL); // polling players
-        setPollPlayerIntervalId(intervalId);
-        setShowWaitingPage(true);
-        setShowQuestionPage(false);
-      } else {
-        setShowWaitingPage(false);
-        setShowQuestionPage(true);
-      }
+      fetchPlayers();
+      fetchPosition().then(() => {
+        if (position === -1) { // waiting for players
+          const intervalId = setInterval(fetchPlayers, POLLING_INTERVAL); // polling players
+          setPollPlayerIntervalId(intervalId);
+          setShowWaitingPage(true);
+          setShowQuestionPage(false);
+        } else if (position >= 0 && position < totalQuestion) { // question page
+          setShowWaitingPage(false);
+          setShowQuestionPage(true);
+        } else { // result page
+          setShowWaitingPage(false);
+          setShowQuestionPage(false);
+          setShowResultPage(true);
+        }
+      });
     };
 
     fetchData();
@@ -58,6 +65,7 @@ const SessionAdminPage: React.FC = () => {
     const fetchQuestions = async () => {
       const response = await apiRequest('GET', `/admin/quiz/${quizId}`);
       setQuestionList(response.questions);
+      setTotalQuestion(response.questions.length)
       console.log(questionList);
     };
     console.log(quizId);
@@ -70,8 +78,10 @@ const SessionAdminPage: React.FC = () => {
     if (position >= 0 && questionList) {
       if (questionList[position] == null) {
         console.log('questionList[position] is null');
-        // TODO result page
+        setShowQuestionPage(false);
+        setShowResultPage(true);
       } else {
+        setQuestionNo(position + 1);
         setCurrentQuestion(questionList[position]);
         console.log(questionList[position]);
       }
@@ -142,9 +152,15 @@ const SessionAdminPage: React.FC = () => {
               Skip The Question
             </Button>
           </div>
+          <div className="text-center mt-3 mb-4">
+          <Typography variant="h5" component="h2">
+            Question {questionNo} / {totalQuestion}
+          </Typography>
+        </div>
           <pre>{JSON.stringify(currentQuestion, null, 2)}</pre>
         </div>
       )}
+      {showResultPage && (<></>)}
     </div>
   );
 };
