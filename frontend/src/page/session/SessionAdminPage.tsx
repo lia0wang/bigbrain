@@ -17,7 +17,7 @@ const SessionAdminPage: React.FC = () => {
   const [showWaitingPage, setShowWaitingPage] = useState(true);
   const [showQuestionPage, setShowQuestionPage] = useState(false);
   const [showResultPage, setShowResultPage] = useState(false);
-  const [position, setPosition] = useState(-1);
+  const [position, setPosition] = useState(null);
   const [questionList, setQuestionList] = useState(null);
   const [currentQuestion, setCurrentQuestion] = useState(null);
   const [pollPlayerIntervalId, setPollPlayerIntervalId] = useState(null);
@@ -28,38 +28,39 @@ const SessionAdminPage: React.FC = () => {
     return <NotFoundPage />;
   }
 
+  const fetchPlayers = async () => {
+    const response = await apiRequest('GET', `/admin/session/${sessionId}/status`);
+    setPlayers(response.results.players);
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      const fetchPosition = async () => {
-        const response = await apiRequest('GET', `/admin/session/${sessionId}/status`);
-        setPosition(response.results.position);
-      };
-
-      const fetchPlayers = async () => {
-        const response = await apiRequest('GET', `/admin/session/${sessionId}/status`);
-        setPlayers(response.results.players);
-      };
-
-      fetchPlayers();
-      fetchPosition().then(() => {
-        if (position === -1) { // waiting for players
-          const intervalId = setInterval(fetchPlayers, POLLING_INTERVAL); // polling players
-          setPollPlayerIntervalId(intervalId);
-          setShowWaitingPage(true);
-          setShowQuestionPage(false);
-        } else if (position >= 0 && position < totalQuestion) { // question page
-          setShowWaitingPage(false);
-          setShowQuestionPage(true);
-        } else { // result page
-          setShowWaitingPage(false);
-          setShowQuestionPage(false);
-          setShowResultPage(true);
-        }
-      });
+    const fetchPosition = async () => {
+      const response = await apiRequest('GET', `/admin/session/${sessionId}/status`);
+      setPosition(response.results.position);
     };
 
-    fetchData();
-  }, [position]);
+    fetchPlayers();
+    fetchPosition();
+  }, []);
+
+  useEffect(() => {
+    console.log(position);
+    if (position === -1) { // waiting page
+      const intervalId = setInterval(async () => {
+        await fetchPlayers();
+      }, POLLING_INTERVAL); // polling players in waiting page
+      setPollPlayerIntervalId(intervalId);
+      setShowWaitingPage(true);
+      setShowQuestionPage(false);
+    } else if (position >= 0 && position < totalQuestion) { // question page
+      setShowWaitingPage(false);
+      setShowQuestionPage(true);
+    } else if (position === totalQuestion) { // results page
+      setShowWaitingPage(false);
+      setShowQuestionPage(false);
+      setShowResultPage(true);
+    }
+  }, [position, totalQuestion]);
 
   useEffect(() => {
     const fetchQuestions = async () => {
