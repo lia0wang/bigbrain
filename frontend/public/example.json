@@ -1,0 +1,60 @@
+{
+    "name": "Example Game Title",
+    "thumbnail": "https://previews.123rf.com/images/fordzolo/fordzolo1506/fordzolo150600296/41026708-example-white-stamp-text-on-red-backgroud.jpg",
+    "questions": [
+        {
+            "title": "Example question 1: what year did Jay Chou born?",
+            "media": "https://i.ytimg.com/vi/F_OCgbYNs_w/hqdefault.jpg",
+            "type": "multi",
+            "timeLimit": 10,
+            "points": 200,
+            "answers": [
+                {
+                    "answer": {
+                        "content": "1977",
+                        "isCorrect": false
+                    }
+                },
+                {
+                    "answer": {
+                        "content": "1978",
+                        "isCorrect": true
+                    }
+                },
+                {
+                    "answer": {
+                        "content": "1979",
+                        "isCorrect": false
+                    }
+                },
+                {
+                    "answer": {
+                        "content": "Year 1978",
+                        "isCorrect": true
+                    }
+                }
+            ]
+        },
+        {
+            "title": "Example question 2: did Hebe Tien born in March?",
+            "media": "https://i.ytimg.com/vi/F_OCgbYNs_w/hqdefault.jpg",
+            "type": "single",
+            "timeLimit": 20,
+            "points": 100,
+            "answers": [
+                {
+                    "answer": {
+                        "content": "Yes",
+                        "isCorrect": true
+                    }
+                },
+                {
+                    "answer": {
+                        "content": "No",
+                        "isCorrect": false
+                    }
+                }
+            ]
+        }
+    ]
+}

@@ -39,6 +39,7 @@ const EditGamePage: React.FC = () => {
   const [gameThumbnail, setGameThumbnail] = useState<string | null>(null);
   const [gameName, setGameName] = useState<string>('');
   const [modifiedGameName, setModifiedGameName] = useState<string>('');
+  const [gameData, setGameData] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -114,6 +115,53 @@ const EditGamePage: React.FC = () => {
     apiRequest('PUT', `/admin/quiz/${gameId}`, resp);
     setGameName(modifiedGameName);
     alert('Changes saved!');
+  };
+
+  const handleJSONChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const reader = new FileReader();
+      reader.onload = async (event) => {
+        if (event.target && event.target.result) {
+          const data = event.target.result as string;
+          const parsedData = JSON.parse(data);
+          setGameData(parsedData);
+        }
+      };
+      reader.readAsText(file);
+    }
+  };
+
+  const updateGameByJSON = async () => {
+    console.log(gameData);
+    if (gameData) {
+      resp.name = gameData.name;
+      resp.thumbnail = gameData.thumbnail;
+      setGameThumbnail(gameData.thumbnail);
+      setResp({
+        name: gameData.name,
+        thumbnail: gameData.thumbnail,
+        ...resp
+      });
+
+      // setResp({ ...resp })
+
+      console.log(gameData.questions);
+      console.log(gameData.thumbnail);
+
+      resp.questions = gameData.questions;
+      const requestBody = {
+        name: gameData.name,
+        thumbnail: gameData.thumbnail,
+        ...resp
+      };
+      console.log(requestBody);
+      await apiRequest('PUT', `/admin/quiz/${gameId}`, requestBody);
+      setResp({ ...resp });
+      setGameName(gameData.name);
+      alert('Changes saved!');
+      // console.log(gameThumbnail);
+    }
   };
 
   return (
@@ -226,11 +274,12 @@ const EditGamePage: React.FC = () => {
               <input
                 type="file"
                 accept="application/json"
+                onChange={handleJSONChange}
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
               />
               <button
-                className="bg-blue-500 text-white px-2 py-1 rounded mt-2"
-              // onClick={() => { updateGameByJSON }}
+                className="bg-blue-500 text-white px-2 py-1 rounded mt-3"
+                onClick={updateGameByJSON}
               >
                 Upload JSON
               </button>
