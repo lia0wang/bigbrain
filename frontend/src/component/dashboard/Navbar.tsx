@@ -47,7 +47,7 @@ const Navbar: React.FC<{
           </span>
         </a>
         <div className="flex md:order-2">
-          {pageType === 'Dashboard' && (
+          {pageType === 'Dashboard' && isLoggedIn && (
             <ButtonBlue
               text="Create"
               onClick={openCreateModal}
