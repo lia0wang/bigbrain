@@ -214,7 +214,8 @@ const EditQuestionPage: React.FC<{ qId: string; gameId: string }> = ({
         obj.answer.isCorrect = !obj.answer.isCorrect;
       }
     });
-    resp.questions.find((obj) => obj.question.id === qId).question.answers = answers;
+    resp.questions.find((obj) => obj.question.id === qId).question.answers =
+      answers;
     setResp({ ...resp });
   };
 
