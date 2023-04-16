@@ -4,6 +4,7 @@ import NotFoundPage from '../NotFoundPage';
 import apiRequest from '../../util/api';
 import EnterNameModal from '../../modal/EnterNameModal';
 import { Button, Box, Container, Typography } from '@mui/material';
+import Navbar from '../../component/dashboard/Navbar';
 
 const SessionPlayerPage: React.FC = () => {
   const { sessionId } = useParams();
@@ -56,44 +57,47 @@ const SessionPlayerPage: React.FC = () => {
   };
 
   return (
-    <div className="bg-sky-100 min-h-screen flex flex-col content-center">
-      {!playerId && (
-        <EnterNameModal onConfirm={joinSessionWithName} />
-      )}
-      {playerId && (
-        <Container maxWidth="sm">
-          <Box sx={{ textAlign: 'center', mt: 4, mb: 2 }}>
-            <Typography variant="h4" component="h1">
-              Waiting Lobby
-            </Typography>
-            {/* <Typography>Your identification: {playerId}</Typography> */}
-            <Typography variant="h6" component="h3">
-              Hello, {playerName}! <br />
-              Kindly wait for the administrator to initiate the game :)
-            </Typography>
-            <Typography variant="h6" component="h3">In the meantime, you can enjoy a fun little game.</Typography>
-          </Box>
-          <Box sx={{ textAlign: 'center', mt: 2 }}>
-            <Typography variant="h6" component="h3">Try if you can stop the count at exactly at 5!</Typography>
-            {!isRunning
-              ? (
-                <Button variant="contained" color="primary" onClick={startTimer}>
-                  Start
-                </Button>
-                )
-              : (
-                <Button variant="contained" color="primary" onClick={stopTimer}>
-                  Stop
-                </Button>
-                )}
-            <Typography className="mt-4">
-              Timer: {(timer / 1000).toFixed(2)}s
-            </Typography>
-            <Typography className="mt-4">{message}</Typography>
-          </Box>
-        </Container>
-      )}
-    </div>
+    <>
+      <Navbar />
+      <div className="bg-sky-100 min-h-screen flex flex-col content-center">
+        {!playerId && (
+          <EnterNameModal onConfirm={joinSessionWithName} />
+        )}
+        {playerId && (
+          <Container maxWidth="sm" className='mt-[50px]'>
+            <Box sx={{ textAlign: 'center', mt: 4, mb: 2 }}>
+              <Typography variant="h4" component="h1">
+                Waiting Lobby
+              </Typography>
+              {/* <Typography>Your identification: {playerId}</Typography> */}
+              <Typography variant="h6" component="h3">
+                Hello, {playerName}! <br />
+                Kindly wait for the administrator to initiate the game :)
+              </Typography>
+              <Typography variant="h6" component="h3">In the meantime, you can enjoy a fun little game.</Typography>
+            </Box>
+            <Box sx={{ textAlign: 'center', mt: 2 }}>
+              <Typography variant="h6" component="h3">Try if you can stop the count at exactly at 5!</Typography>
+              {!isRunning
+                ? (
+                  <Button variant="contained" color="primary" onClick={startTimer}>
+                    Start
+                  </Button>
+                  )
+                : (
+                  <Button variant="contained" color="primary" onClick={stopTimer}>
+                    Stop
+                  </Button>
+                  )}
+              <Typography className="mt-4">
+                Timer: {(timer / 1000).toFixed(2)}s
+              </Typography>
+              <Typography className="mt-4">{message}</Typography>
+            </Box>
+          </Container>
+        )}
+      </div>
+    </>
   );
 };
 

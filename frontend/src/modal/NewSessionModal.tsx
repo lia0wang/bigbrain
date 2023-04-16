@@ -7,9 +7,10 @@ interface NewGameModalProps {
   gameTitle: string;
   onClose: () => void;
   sessionId: string;
+  quizId: number;
 }
 
-const NewGameModal: React.FC<NewGameModalProps> = ({ gameTitle, onClose, sessionId }) => {
+const NewGameModal: React.FC<NewGameModalProps> = ({ gameTitle, onClose, sessionId, quizId }) => {
   const [isCopied, setIsCopied] = React.useState(false);
 
   const handleCopy = () => {
@@ -20,7 +21,7 @@ const NewGameModal: React.FC<NewGameModalProps> = ({ gameTitle, onClose, session
   const navigate = useNavigate();
   // Navigate to page admin/session/:sessionId
   const goToSessionAdminPage = () => {
-    navigate(`/admin/session/${sessionId}`);
+    navigate(`/admin/session/${sessionId}`, { state: { quizId, gameTitle } });
   };
 
   const urlWithSessionId = `${FRONT_END_URL}/session/${sessionId}`;

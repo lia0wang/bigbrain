@@ -1,60 +1,105 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams, useLocation } from 'react-router-dom';
 import NotFoundPage from '../NotFoundPage';
 import apiRequest from '../../util/api';
 import React, { useEffect, useState } from 'react';
 import { POLLING_INTERVAL } from '../../config';
-import LoadingPage from '../LoadingPage';
-import { Button, Card, CardContent, List, ListItem, Typography, ListItemText } from '@mui/material';
+import { Button, Card, CardContent, List, Typography } from '@mui/material';
 import { PlayArrow } from '@mui/icons-material';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import Navbar from '../../component/dashboard/Navbar';
 
 const SessionAdminPage: React.FC = () => {
   const { sessionId } = useParams();
-  const navigate = useNavigate();
+  const location = useLocation();
+  const { quizId, gameTitle } = location.state || { quizId: null, gameTitle: null };
+
   const [players, setPlayers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  // const [quizId, setQuizId] = useState(true);
+  const [showWaitingPage, setShowWaitingPage] = useState(true);
+  const [showQuestionPage, setShowQuestionPage] = useState(false);
+  const [position, setPosition] = useState(-1);
+  const [questionList, setQuestionList] = useState(null);
+  const [currentQuestion, setCurrentQuestion] = useState(null);
+  const [pollPlayerIntervalId, setPollPlayerIntervalId] = useState(null);
 
   if (!sessionId) {
     return <NotFoundPage />;
   }
 
   useEffect(() => {
-    const fetchPlayers = async () => {
-      const response = await apiRequest('GET', `/admin/session/${sessionId}/status`);
-      setPlayers(response.results.players);
-      setLoading(false);
+    const fetchData = async () => {
+      const fetchPosition = async () => {
+        const response = await apiRequest('GET', `/admin/session/${sessionId}/status`);
+        setPosition(response.results.position);
+      };
+
+      const fetchPlayers = async () => {
+        const response = await apiRequest('GET', `/admin/session/${sessionId}/status`);
+        setPlayers(response.results.players);
+      };
+
+      await fetchPosition();
+      await fetchPlayers();
+
+      if (position === -1) {
+        const intervalId = setInterval(fetchPlayers, POLLING_INTERVAL); // polling players
+        setPollPlayerIntervalId(intervalId);
+        setShowWaitingPage(true);
+        setShowQuestionPage(false);
+      } else {
+        setShowWaitingPage(false);
+        setShowQuestionPage(true);
+      }
     };
 
-    const intervalId = setInterval(fetchPlayers, POLLING_INTERVAL);
+    fetchData();
+  }, [position]);
 
-    setLoading(true); // Set loading state before the initial fetch
-    fetchPlayers(); // Perform an initial fetch
-
-    return () => {
-      clearInterval(intervalId); // Clean up the interval on component unmount
+  useEffect(() => {
+    const fetchQuestions = async () => {
+      const response = await apiRequest('GET', `/admin/quiz/${quizId}`);
+      setQuestionList(response.questions);
+      console.log(questionList);
     };
-  }, []);
+    console.log(quizId);
+    if (quizId) {
+      fetchQuestions(); // Perform an initial fetch of question list
+    }
+  }, [quizId]); // Run the effect when quizId changes
 
-  const handleStartGame = () => {
-    // TODO
-    // apiRequest('POST', `/admin/quiz/${quizId}/start`);
+  useEffect(() => {
+    if (position >= 0 && questionList) {
+      if (questionList[position] == null) {
+        console.log('questionList[position] is null');
+        // TODO result page
+      } else {
+        setCurrentQuestion(questionList[position]);
+        console.log(questionList[position]);
+      }
+    }
+  }, [position, questionList]); // Run the effect when position or questionList changes, new question will be set
+
+  const handleAdvance = async () => {
+    const resp = await apiRequest('POST', `/admin/quiz/${quizId}/advance`, { quizId });
+    console.log(resp);
+    setPosition(resp.stage);
+    pollPlayerIntervalId && clearInterval(pollPlayerIntervalId);
   };
-
-  if (loading) {
-    return <LoadingPage />;
-  }
 
   return (
     <div className="bg-sky-100 min-h-screen flex flex-col content-center">
       <Navbar />
-      <div className="container mx-auto px-4 sm:max-w-sm bg-sky-100 min-h-screen">
-        <div className="text-center mt-[100px]">
+      {showWaitingPage && (<div className="container mx-auto px-4 sm:max-w-sm bg-sky-100 min-h-screen">
+        <div className="text-center mt-[100px] mb-4">
+          <Typography variant="h4" component="h2">
+            Quiz: {gameTitle}
+          </Typography>
+        </div>
+        <div className="text-center mt-6">
           <Button
             variant="contained"
             color="primary"
             startIcon={<PlayArrow />}
-            onClick={handleStartGame}
+            onClick={handleAdvance}
             disabled={players.length === 0}
           >
             Start Quiz
@@ -83,7 +128,23 @@ const SessionAdminPage: React.FC = () => {
             </div>
           ))}
         </List>
-      </div>
+      </div>)}
+      {showQuestionPage && (
+        <div className="container mx-auto px-4 sm:max-w-sm bg-sky-100 min-h-screen">
+          <div className="text-center mt-[85px]">
+            <Button
+              variant="contained"
+              color="primary"
+              startIcon={<ArrowForwardIosIcon />}
+              onClick={handleAdvance}
+              disabled={players.length === 0}
+            >
+              Skip The Question
+            </Button>
+          </div>
+          <pre>{JSON.stringify(currentQuestion, null, 2)}</pre>
+        </div>
+      )}
     </div>
   );
 };
