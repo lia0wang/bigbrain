@@ -225,7 +225,7 @@ const EditQuestionPage: React.FC<{ qId: string; gameId: string }> = ({
       {deviceType === 'mobile' && (
         <>
           <Navbar pageType="EditQuestion" />
-          <div className="bg-sky-100 w-screen h-screen flex flex-col py-20">
+          <div className="bg-sky-100 w-screen h-screen flex flex-col pt-20">
             {/* EditButtonDrawer */}
             <div className="flex flex-row justify-end m-2">
               <div>
@@ -318,9 +318,9 @@ const EditQuestionPage: React.FC<{ qId: string; gameId: string }> = ({
       {deviceType === 'desktop' && (
         <>
           <Navbar pageType="EditQuestion" />
-          <div className="flex flex-row">
+          <div className="flex flex-row bg-sky-100">
             {/* left screen */}
-            <div className="bg-sky-100 w-[70%] h-screen flex flex-col md:py-24 lg:py-24">
+            <div className="flex w-[70%] flex-col md:mt-24 lg:mt-24 xl:mt-32">
               {/* Title & Buttons */}
               <div className="flex flex-row justify-evenly">
                 <div className="flex flex-col justify-center items-center">
