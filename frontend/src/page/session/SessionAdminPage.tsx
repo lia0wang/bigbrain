@@ -72,6 +72,8 @@ const SessionAdminPage: React.FC = () => {
     console.log(quizId);
     if (quizId) {
       fetchQuestions(); // Perform an initial fetch of question list
+    } else {
+      alert('Please enter the admin page from dashboard.\nClick session id and then click "GO TO SESSION ADMIN PAGE"')
     }
   }, [quizId]); // Run the effect when quizId changes
 
