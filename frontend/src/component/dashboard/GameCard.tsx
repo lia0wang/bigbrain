@@ -149,6 +149,7 @@ const GameCard: React.FC<{
           gameTitle={title}
           onClose={() => setShowNewGameModal(false)}
           sessionId={sessionId}
+          quizId={id}
         />
       )}
       </>

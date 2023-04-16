@@ -43,8 +43,6 @@ const apiRequest = async (
               'Could not connect to server. Is your internet connection ok?',
           },
         };
-      } else if (error.response.status >= 400) {
-        error.response.data.ok = false;
       }
       return Promise.reject(error);
     }

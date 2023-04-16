@@ -7,9 +7,10 @@ interface NewGameModalProps {
   gameTitle: string;
   onClose: () => void;
   sessionId: string;
+  quizId: number;
 }
 
-const NewGameModal: React.FC<NewGameModalProps> = ({ gameTitle, onClose, sessionId }) => {
+const NewGameModal: React.FC<NewGameModalProps> = ({ gameTitle, onClose, sessionId, quizId }) => {
   const [isCopied, setIsCopied] = React.useState(false);
 
   const handleCopy = () => {
@@ -20,7 +21,7 @@ const NewGameModal: React.FC<NewGameModalProps> = ({ gameTitle, onClose, session
   const navigate = useNavigate();
   // Navigate to page admin/session/:sessionId
   const goToSessionAdminPage = () => {
-    navigate(`/admin/session/${sessionId}`);
+    navigate(`/admin/session/${sessionId}`, { state: { quizId, gameTitle } });
   };
 
   const urlWithSessionId = `${FRONT_END_URL}/session/${sessionId}`;
@@ -51,11 +52,11 @@ const NewGameModal: React.FC<NewGameModalProps> = ({ gameTitle, onClose, session
         </div>
         <div className="flex flex-row justify-around mt-2">
           <button
-            className="bg-yellow-500 hover:bg-yellow-400 text-white font-bold py-2 px-4 w-[200px]
+            className="bg-yellow-500 hover:bg-yellow-400 text-white font-bold py-2 px-4 w-[300px]
                         border-b-4 border-yellow-700 hover:border-yellow-500 rounded"
             type="button"
             onClick={goToSessionAdminPage}>
-            GO TO ADMIN PAGE
+            GO TO SESSION ADMIN PAGE
           </button>
       </div>
       </div>

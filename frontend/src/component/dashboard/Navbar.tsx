@@ -1,10 +1,11 @@
 // Navbar.tsx
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import apiRequest from '../../util/api';
 import AuthLogoutButton from '../auth/AuthLogoutButton';
 import ButtonBlue from './ButtonBlue';
 import CreateModal from '../../modal/CreateGameModal';
 import AuthErrorPopup from '../auth/AuthErrorPopup';
+import AuthLoginButton from '../auth/AuthLoginButton';
 
 const Navbar: React.FC<{
   pageType?: string;
@@ -12,6 +13,7 @@ const Navbar: React.FC<{
   const [name, setName] = useState('');
   const [isGameCreated, setIsGameCreated] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const openCreateModal = () => {
     setShowCreateModal(true);
@@ -27,6 +29,14 @@ const Navbar: React.FC<{
     setIsGameCreated(true);
   };
 
+  // check if a user is logged in by checking if there is a token in local storage
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsLoggedIn(true);
+    }
+  }, []);
+
   return (
     <nav className="bg-white fixed w-full z-999 top-0 left-0 border-b border-gray-200 shadow-md">
       <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
@@ -37,13 +47,13 @@ const Navbar: React.FC<{
           </span>
         </a>
         <div className="flex md:order-2">
-          {pageType === 'Dashboard' && (
+          {pageType === 'Dashboard' && isLoggedIn && (
             <ButtonBlue
               text="Create"
               onClick={openCreateModal}
             />
           )}
-          <AuthLogoutButton />
+          {pageType !== 'None' && (isLoggedIn ? (<AuthLogoutButton />) : (<AuthLoginButton />))}
         </div>
       </div>
       {showCreateModal && (
