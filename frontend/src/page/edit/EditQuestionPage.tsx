@@ -3,8 +3,6 @@ import Navbar from '../../component/dashboard/Navbar';
 import NotFoundPage from '../NotFoundPage';
 import apiRequest, { ApiResponse } from '../../util/api';
 import LoadingPage from '../LoadingPage';
-import EditButtonDrawer from '../../component/edit/EditButtonDrawer';
-import Typography from '@mui/material/Typography';
 import ButtonBlue from '../../component/dashboard/ButtonBlue';
 import ButtonGreen from '../../component/dashboard/ButtonGreen';
 import { isMobileWidth, isDesktopWidth } from '../../util/media';
@@ -15,7 +13,9 @@ import DeleteOutline from '@mui/icons-material/DeleteOutline';
 import EditFormControl from '../../component/edit/EditFormControl';
 import { uid } from 'uid';
 import AuthErrorPopup from '../../component/auth/AuthErrorPopup';
-import { TextField } from '@mui/material';
+import { Button, Drawer, Fab, TextField } from '@mui/material';
+import { fileToDataUrl } from '../../util/imageHandler';
+import AddIcon from '@mui/icons-material/Add';
 
 interface Answer {
   id: string;
@@ -27,9 +27,9 @@ interface Question {
   id: string;
   title: string;
   media: string;
-  type: 'single' | 'multiple';
+  type: string;
   timeLimit: number;
-  points: number;
+  point: number;
   answers: Array<{ answer: Answer }>;
 }
 
@@ -41,7 +41,10 @@ interface GameApiResponse extends ApiResponse {
   questions: Array<{ question: Question }>;
 }
 
-const EditQuestionPage: React.FC<{ qId: string, gameId: string }> = ({ qId, gameId }) => {
+const EditQuestionPage: React.FC<{ qId: string; gameId: string }> = ({
+  qId,
+  gameId,
+}) => {
   const [resp, setResp] = useState<GameApiResponse | null>(null);
   const [deviceType, setDeviceType] = useState('');
   const [type, setType] = useState('');
@@ -50,10 +53,14 @@ const EditQuestionPage: React.FC<{ qId: string, gameId: string }> = ({ qId, game
   const [isMaxAnswers, setIsMaxAnswers] = useState(false);
   const [Contents, setContents] = useState(new Map<string, string>());
   const [title, setTitle] = useState('');
+  const [media, setMedia] = useState<string | null>(null);
+  const [state, setState] = useState({
+    right: false,
+  });
 
   const types = new Map([
-    ['Multi-Select', 'multi'],
     ['Single-Select', 'single'],
+    ['Multi-Select', 'multi'],
   ]);
 
   const times = new Map([
@@ -69,6 +76,33 @@ const EditQuestionPage: React.FC<{ qId: string, gameId: string }> = ({ qId, game
     ['200 points', '200'],
     ['500 points', '300'],
   ]);
+
+  const toggleDrawer =
+    (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
+      if (
+        event.type === 'keydown' &&
+        ((event as React.KeyboardEvent).key === 'Tab' ||
+          (event as React.KeyboardEvent).key === 'Shift')
+      ) {
+        return;
+      }
+      setState({ ...state, right: open });
+    };
+
+  const list = () => (
+    <form className="flex flex-col justify-center items-center h-screen">
+      <span className="my-[4%]" />
+      <h6 className="text-center">Question Type</h6>
+      <EditFormControl select={type} setSelect={setType} options={types} />
+      <span className="my-[4%]" />
+      <h6 className="text-center">Time Limit</h6>
+      <EditFormControl select={time} setSelect={setTime} options={times} />
+      <span className="my-[4%]" />
+      <h6 className="text-center">Points</h6>
+      <EditFormControl select={point} setSelect={setPoint} options={points} />
+      <span className="my-[4%]" />
+    </form>
+  );
 
   useEffect(() => {
     const handleResize = () => {
@@ -86,13 +120,24 @@ const EditQuestionPage: React.FC<{ qId: string, gameId: string }> = ({ qId, game
     const fetchData = async () => {
       const response = await apiRequest('GET', `/admin/quiz/${gameId}`);
       setResp(response as GameApiResponse);
+      const question = response.questions.find(
+        (question: { question: Question }) => question.question.id === qId
+      ).question;
+      const defaultMedia =
+        'https://cdn.dribbble.com/userupload/4487190/file/original-d4c3ba33335a133315f0e2dca0332649.png?compress=1&resize=752x';
+      setTitle(question.title);
+      setMedia(question.media === null ? defaultMedia : question.media);
+      setType(question.type);
+      setPoint(question.point.toString());
+      setTime(question.timeLimit.toString());
     };
     fetchData();
   }, [qId]);
 
   const getQuestionInfo = () => {
-    return resp.questions.find((question) => question.question.id === qId).question;
-  }
+    return resp.questions.find((question) => question.question.id === qId)
+      .question;
+  };
 
   if (!resp) {
     return <LoadingPage />;
@@ -123,33 +168,40 @@ const EditQuestionPage: React.FC<{ qId: string, gameId: string }> = ({ qId, game
     });
     setResp({ ...resp });
     apiRequest('PUT', `/admin/quiz/${gameId}/`, resp);
-  }
+  };
 
   const deleteAnswerHandler = (id: string) => {
-    const newAnswers = getQuestionInfo().answers.filter((obj) => obj.answer.id !== id);
-    resp.questions.find((obj) => obj.question.id === qId).question.answers = newAnswers;
+    const newAnswers = getQuestionInfo().answers.filter(
+      (obj) => obj.answer.id !== id
+    );
+    resp.questions.find((obj) => obj.question.id === qId).question.answers =
+      newAnswers;
     setResp({ ...resp });
     apiRequest('PUT', `/admin/quiz/${gameId}/`, resp);
-  }
+  };
+
+  const handleMediaChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      const dataUrl = await fileToDataUrl(file as Blob);
+      setMedia(dataUrl);
+    } else {
+      setMedia(null);
+    }
+  };
 
   const saveHandler = () => {
-    const question = getQuestionInfo();
+    const question = resp.questions.find(
+      (obj) => obj.question.id === qId
+    ).question;
     question.title = title;
-    resp.questions.find((obj) => obj.question.id === qId).question = question;
+    question.media = media;
+    question.type = type;
+    question.timeLimit = parseInt(time as string);
+    question.point = parseInt(point as string);
     setResp({ ...resp });
-    // console.log(Contents);
-    // const answers = getQuestionInfo().answers;
-    // answers.forEach((obj) => {
-    //   Contents.forEach((value, key) => {
-    //     if (obj.answer.id === key) {
-    //       obj.answer.content = value;
-    //       resp.questions.find((obj) => obj.question.id === qId).question.answers = answers;
-    //       setResp({ ...resp });
-    //     }
-    //   });
-    // });
     apiRequest('PUT', `/admin/quiz/${gameId}/`, resp);
-  }
+  };
 
   const checkboxHandler = (id: string) => {
     const answers = getQuestionInfo().answers;
@@ -158,34 +210,61 @@ const EditQuestionPage: React.FC<{ qId: string, gameId: string }> = ({ qId, game
         obj.answer.isCorrect = !obj.answer.isCorrect;
       }
     });
-    resp.questions.find((obj) => obj.question.id === qId).question.answers = answers;
+    resp.questions.find((obj) => obj.question.id === qId).question.answers =
+      answers;
     setResp({ ...resp });
-  }
+  };
 
   return (
     <>
       {deviceType === 'mobile' && (
         <>
-          <Navbar pageType='EditQuestion' />
+          <Navbar pageType="EditQuestion" />
           <div className="bg-sky-100 w-screen h-screen flex flex-col py-20">
             {/* EditButtonDrawer */}
             <div className="flex flex-row justify-end m-2">
-              <EditButtonDrawer />
+              <div>
+                <Fab
+                  onClick={toggleDrawer(true)}
+                  size="small"
+                  color="primary"
+                  aria-label="add"
+                >
+                  <AddIcon />
+                </Fab>
+                <Drawer
+                  anchor={'right'}
+                  open={state.right}
+                  onClose={toggleDrawer(false)}
+                >
+                  {list()}
+                </Drawer>
+              </div>
             </div>
 
             {/* Title & Buttons */}
-            <div className="flex flex-row justify-evenly mt-[-20px]">
+            <div className="flex flex-row justify-evenly mt-[-40px]">
               <div className="flex flex-col justify-center items-center">
                 <TextField
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder={getQuestionInfo().title}
-                label="Title" color="secondary" focused />
-                <img
-                  className='w-[150px] h-[150px] object-cover rounded-[10px] mt-4'
-                  src={getQuestionInfo().media} // TODO: Add video support
+                  size="small"
+                  type="text"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder={getQuestionInfo().title}
+                  label="Title"
+                  color="secondary"
+                  focused
                 />
+                <img
+                  className="w-[150px] h-[150px] object-cover rounded-[10px] mt-4"
+                  src={media} // TODO: Add video support
+                />
+                <div className="mt-2">
+                  <Button variant="contained" component="label" size="small">
+                    Upload Media
+                    <input type="file" hidden onChange={handleMediaChange} />
+                  </Button>
+                </div>
               </div>
               <div className="flex flex-col justify-evenly items-center py-4 mt-10">
                 <ButtonGreen text="Add" onClick={() => addAnswerHandler()} />
@@ -195,21 +274,35 @@ const EditQuestionPage: React.FC<{ qId: string, gameId: string }> = ({ qId, game
 
             {/* Answers */}
             <div className="max-w-[500px] mx-auto mt-4">
-              <Grid container
+              <Grid
+                container
                 spacing={{ xs: 2, sm: 3, md: 4, lg: 5, xl: 6, xxl: 6 }}
-                columnSpacing={{ xs: 2, sm: 3, md: 4, lg: 5, xl: 6, xxl: 6 }}>
+                columnSpacing={{ xs: 2, sm: 3, md: 4, lg: 5, xl: 6, xxl: 6 }}
+              >
                 {getQuestionInfo().answers.map((obj, index) => {
                   if (!obj.answer) return null;
                   return (
                     <Grid item xs={12} sm={6} md={6} lg={6} xl={6} key={index}>
-                      <div className="flex flex-row justify-center min-w-[250px]
-                                          sm:mt-8 md:mt-10">
-                        <Input placeholder="Put answer" value={Contents.get(obj.answer.id)} onChange={(e) => Contents.set(obj.answer.id, e.target.value)} />
-                        <Checkbox checked={obj.answer.isCorrect} onChange={() => checkboxHandler(obj.answer.id)} />
+                      <div
+                        className="flex flex-row justify-center min-w-[250px]
+                                          sm:mt-8 md:mt-10"
+                      >
+                        <Input
+                          placeholder="Put answer"
+                          value={Contents.get(obj.answer.id)}
+                          onChange={(e) =>
+                            Contents.set(obj.answer.id, e.target.value)
+                          }
+                        />
+                        <Checkbox
+                          checked={obj.answer.isCorrect}
+                          onChange={() => checkboxHandler(obj.answer.id)}
+                        />
                         <DeleteOutline
-                          className='cursor-pointer mt-[9px] ml-[-4px]'
+                          className="cursor-pointer mt-[9px] ml-[-4px]"
                           onClick={() => deleteAnswerHandler(obj.answer.id)}
-                          color='primary' />
+                          color="primary"
+                        />
                       </div>
                     </Grid>
                   );
@@ -221,21 +314,33 @@ const EditQuestionPage: React.FC<{ qId: string, gameId: string }> = ({ qId, game
       )}
       {deviceType === 'desktop' && (
         <>
-          <Navbar pageType='EditQuestion' />
-          <div className='flex flex-row'>
+          <Navbar pageType="EditQuestion" />
+          <div className="flex flex-row">
             {/* left screen */}
-            <div className="bg-sky-100 w-[70%] h-screen flex flex-col md:py-24 lg:py-24 xl:py-32 2xl:py-40">
+            <div className="bg-sky-100 w-[70%] h-screen flex flex-col md:py-24 lg:py-24">
               {/* Title & Buttons */}
               <div className="flex flex-row justify-evenly">
                 <div className="flex flex-col justify-center items-center">
-                  <Typography variant="h5" component="h5" gutterBottom color={'primary'}>
-                    {getQuestionInfo().title}
-                  </Typography>
-                  <img
-                    className='md:w-[250px] md:h-[250px]
-                    object-cover rounded-[10px]'
-                    src={getQuestionInfo().media} // TODO: Add video support
+                  <TextField
+                    type="text"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder={getQuestionInfo().title}
+                    label="Title"
+                    color="secondary"
+                    focused
                   />
+                  <img
+                    className="md:w-[220px] md:h-[220px]
+                    object-cover rounded-[10px] mt-4"
+                    src={media} // TODO: Add video support
+                  />
+                  <div className="mt-4">
+                    <Button variant="contained" component="label">
+                      Upload Media
+                      <input type="file" hidden onChange={handleMediaChange} />
+                    </Button>
+                  </div>
                 </div>
                 <div className="flex flex-col justify-evenly items-center py-4 mt-10">
                   <ButtonGreen text="Add" onClick={addAnswerHandler} />
@@ -244,44 +349,58 @@ const EditQuestionPage: React.FC<{ qId: string, gameId: string }> = ({ qId, game
               </div>
 
               {/* Answers */}
-              <div className="mx-auto md:mt-[25px]">
-                <Grid container
+              <div className="mx-auto md:mt-[25px] lg:mt-[0px] ">
+                <Grid
+                  container
                   spacing={{ xs: 2, sm: 3, md: 4, lg: 5, xl: 6, xxl: 6 }}
-                  columnSpacing={{ xs: 2, sm: 3, md: 4, lg: 5, xl: 6, xxl: 6 }}>
-                  {Array.from({ length: 6 }).map((_, index) => (
-                    <Grid item xs={12} sm={6} md={6} lg={6} xl={6} key={index}>
-                      <div className="flex flex-row justify-center
-                                      sm:mt-[2px] md:mt-[15px]">
-                        <Input className='lg:w-[200px] xl:w-[250px] 2xl:w-[275px]' placeholder="Put answer" />
-                        {/* <Checkbox onChange={selectHandler} /> */}
-                        <DeleteOutline
-                          className='cursor-pointer mt-[9px] ml-[-4px]'
-                          // onClick={() => deleteAnswerHandler()}
-                          color='primary' />
-                      </div>
-                    </Grid>
-                  ))}
+                  columnSpacing={{ xs: 2, sm: 3, md: 4, lg: 5, xl: 6, xxl: 6 }}
+                >
+                  {getQuestionInfo().answers.map((obj, index) => {
+                    if (!obj.answer) return null;
+                    return (
+                      <Grid
+                        item
+                        xs={12}
+                        sm={6}
+                        md={6}
+                        lg={6}
+                        xl={6}
+                        key={index}
+                      >
+                        <div
+                          className="flex flex-row justify-center min-w-[250px]
+                                            sm:mt-8 md:mt-4 lg:mt-4"
+                        >
+                          <Input
+                            placeholder="Put answer"
+                            value={obj.answer.content}
+                            onChange={(e) =>
+                              Contents.set(obj.answer.content, e.target.value)
+                            }
+                          />
+                          <Checkbox
+                            checked={obj.answer.isCorrect}
+                            onChange={() => checkboxHandler(obj.answer.id)}
+                          />
+                          <DeleteOutline
+                            className="cursor-pointer mt-[9px] ml-[-4px]"
+                            onClick={() => deleteAnswerHandler(obj.answer.id)}
+                            color="primary"
+                          />
+                        </div>
+                      </Grid>
+                    );
+                  })}
                 </Grid>
               </div>
             </div>
-            <div className="bg-white w-[30%] h-screen">
-              <form className="flex flex-col justify-center items-center h-screen">
-                <span className="my-[4%]" />
-                <h6 className="text-center">Question Type</h6>
-                <EditFormControl select={type} setSelect={setType} options={types} />
-                <span className="my-[4%]" />
-                <h6 className="text-center">Time Limit</h6>
-                <EditFormControl select={time} setSelect={setTime} options={times} />
-                <span className="my-[4%]" />
-                <h6 className="text-center">Points</h6>
-                <EditFormControl select={point} setSelect={setPoint} options={points} />
-                <span className="my-[4%]" />
-              </form>
-            </div>
+            <div className="bg-white w-[30%] h-screen">{list()}</div>
           </div>
         </>
       )}
-      {isMaxAnswers && <AuthErrorPopup error={'Maximum number of answers is 6'} />}
+      {isMaxAnswers && (
+        <AuthErrorPopup error={'Maximum number of answers is 6'} />
+      )}
     </>
   );
 };
