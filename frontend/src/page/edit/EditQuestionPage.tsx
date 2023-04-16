@@ -319,7 +319,7 @@ const EditQuestionPage: React.FC<{ qId: string; gameId: string }> = ({
           <Navbar pageType="EditQuestion" />
           <div className="flex flex-row">
             {/* left screen */}
-            <div className="bg-sky-100 w-[70%] h-screen flex flex-col md:py-24 lg:py-24">
+            <div className="bg-sky-100 w-[70%] h-screen flex flex-col md:py-24 lg:py-24 mt-[20px]">
               {/* Title & Buttons */}
               <div className="flex flex-row justify-evenly">
                 <div className="flex flex-col justify-center items-center">
