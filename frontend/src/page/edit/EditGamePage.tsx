@@ -44,8 +44,11 @@ const EditGamePage: React.FC = () => {
     const fetchData = async () => {
       const response = await apiRequest('GET', `/admin/quiz/${gameId}`);
       setResp(response as GameApiResponse);
-      const defaultThumbnail = 'https://cdn.dribbble.com/userupload/4487190/file/original-d4c3ba33335a133315f0e2dca0332649.png?compress=1&resize=752x'
-      setGameThumbnail(response.thumbnail === null ? defaultThumbnail : String(response.thumbnail));
+      const defaultThumbnail =
+        'https://cdn.dribbble.com/userupload/4487190/file/original-d4c3ba33335a133315f0e2dca0332649.png?compress=1&resize=752x';
+      setGameThumbnail(
+        response.thumbnail === null ? defaultThumbnail : String(response.thumbnail)
+      );
       setGameName(String(response.name));
       setModifiedGameName(String(response.name));
     };
@@ -116,58 +119,123 @@ const EditGamePage: React.FC = () => {
   return (
     <>
       <Navbar />
-      <div className="bg-sky-100 min-h-screen flex flex-col content-center">
-        <h1 className="text-2xl mb-8 mt-20">Edit Game: {gameName}</h1>
-        <div className="mb-4">
-          <label htmlFor="gameName" className="block text-s font-medium text-gray-700">Game Name</label>
-          <input
-            type="text"
-            name="gameName"
-            id="gameName"
-            value={modifiedGameName}
-            onChange={(e) => setModifiedGameName(e.target.value)}
-            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-s"
-          />
-        </div>
-        {gameThumbnail && (
-          <div className="mb-4 flex justify-center">
-            {/* <label className="block text-s font-medium text-gray-700">Thumbnail Preview</label> */}
-            <img src={gameThumbnail} alt="Thumbnail Preview" className="w-1/2 h-auto rounded-md shadow-sm" />
+      <div className="bg-sky-100 min-h-screen flex flex-col items-center px-4">
+        <h1 className="text-3xl mb-8 mt-[100px]">Edit Game: {gameName}</h1>
+        <div className="bg-white shadow-md rounded-md w-full max-w-4xl p-8 flex flex-wrap">
+          <div className="w-full lg:w-1/2 p-4">
+            <div className="mb-4">
+              <label
+                htmlFor="gameName"
+                className="block text-s font-medium text-gray-700">
+                Game Name
+              </label>
+              <input
+                type="text"
+                name="gameName"
+                id="gameName"
+                value={modifiedGameName}
+                onChange={(e) => setModifiedGameName(e.target.value)}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-s"
+              />
+            </div>
+            {gameThumbnail && (
+              <div className="mb-4 flex justify-center">
+                <img
+                  src={gameThumbnail}
+                  alt="Thumbnail Preview"
+                  className="w-full h-auto max-w-md rounded-md shadow-sm"
+                />
+              </div>
+            )}
+            <div className="mb-4">
+              <label
+                htmlFor="gameThumbnail"
+                className="block text-s font-medium text-gray-700">
+                Game Thumbnail
+              </label>
+              <input
+                type="file"
+                name="gameThumbnail"
+                id="gameThumbnail"
+                accept="image/*"
+                onChange={handleThumbnailChange}
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+            <div className="mt-3 flex justify-center">
+              <button
+                className="bg-green-500 text-white px-4 py-2 rounded"
+                onClick={() => saveChanges()}>
+                Save Name and Thumbnail
+              </button>
+            </div>
           </div>
-        )}
-        <div className="mb-4">
-          <label htmlFor="gameThumbnail" className="block text-s font-medium text-gray-700">Game Thumbnail</label>
-          <input
-            type="file"
-            name="gameThumbnail"
-            id="gameThumbnail"
-            accept="image/*"
-            onChange={handleThumbnailChange}
-            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-          />
-        </div>
-        <div className="mt-3 flex justify-center">
-          <button className="bg-green-500 text-white px-4 py-2 rounded" onClick={() => saveChanges()}>Save Changes</button>
-        </div>
-        <h2 className="text-xl mt-8 mb-4">Questions</h2>
-        <ul>
-          {resp.questions.map((obj, index) => {
-            if (!obj || !obj.question) {
-              return null;
-            }
-            return (
-              <li key={index} className="mb-2">
-                <div className="flex items-center">
-                  <button className="bg-red-500 text-white px-2 py-1 rounded mr-2" onClick={() => deleteQuestion(obj.question.id)}>Delete</button>
-                  <button className="bg-blue-500 text-white px-2 py-1 rounded mr-2" onClick={() => editQuestion(obj.question.id)}>Edit</button>
-                  <span className="text-lg text-black">{obj.question.title}</span>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-        <div className="mt-2 flex justify-center">
-          <button className="bg-blue-500 text-white px-2 py-1 rounded mr-2" onClick={() => addQuestion()}>Add Question</button>
+          <div className="w-full lg:w-1/2 p-4">
+            <h2 className="text-2xl mb-4">Questions</h2>
+            <ul>
+              {resp.questions.map((obj, index) => {
+                if (!obj || !obj.question) {
+                  return null;
+                }
+                return (
+                  <li key={index} className="mb-2">
+                    <div className="flex items-center">
+                      <button
+                        className="bg-red-500 text-white px-2 py-1 rounded mr-2"
+                        onClick={() => deleteQuestion(obj.question.id)}>
+                        Delete
+                      </button>
+                      <button
+                        className="bg-blue-500 text-white px-2 py-1 rounded mr-2"
+                        onClick={() => editQuestion(obj.question.id)}>
+                        Edit
+                      </button>
+                      <span className="text-lg text-black">
+                        {obj.question.title}
+                      </span>
+                    </div>
+                  </li>
+                );
+              })}
+            </ul>
+            <div className="mt-2 flex justify-center">
+              <button
+                className="bg-blue-500 text-white px-2 py-1 rounded mr-2"
+                onClick={() => addQuestion()}>
+                Add Question
+              </button>
+            </div>
+            <div className="mt-4">
+              <p>Want to edit the game faster? Try uploading a JSON file. Example JSON Format below.</p>
+              <div className="mt-2">
+                <span className="text-blue-500 hover:text-blue-700 hover:underline">
+                  <a
+                    href="/example.json"
+                    download
+                    className="text-blue-500 hover:text-blue-700 hover:underline focus:outline-none"
+                  >
+                    Download example.json
+                  </a>
+                </span>
+              </div>
+              <label
+                htmlFor="gameThumbnail"
+                className="mt-2 block text-s font-medium text-gray-700">
+                Select your JSON file
+              </label>
+              <input
+                type="file"
+                accept="application/json"
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+              <button
+                className="bg-blue-500 text-white px-2 py-1 rounded mt-2"
+              // onClick={() => { updateGameByJSON }}
+              >
+                Upload JSON
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </>

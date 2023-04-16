@@ -205,6 +205,7 @@ const EditQuestionPage: React.FC<{ qId: string; gameId: string }> = ({
     question.point = parseInt(point as string);
     setResp({ ...resp });
     apiRequest('PUT', `/admin/quiz/${gameId}/`, resp);
+    alert('Question editing saved!');
   };
 
   const checkboxHandler = (id: string) => {
