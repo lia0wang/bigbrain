@@ -10,11 +10,11 @@ const AuthIcon: React.FC = () => {
       2xl:w-[20%]" alt="brain" />
       <h1 className="flex items-center text-xl font-bold mx-[2%]
       lg:text-2xl lg:mx-[3%]
-      2xl:text-5xl">
+      2xl:text-4xl">
         Big Brain
         <span className="bg-blue-100 text-blue-800 text-2xl font-semibold mx-2 px-2.5 py-0.5 rounded bg-blue-200 text-blue-800 drop-shadow-lg
                          lg:text-3xl lg:px-2 lg:py-1 lg:mx-2
-                         2xl:text-5xl 2xl:px-5 2xl:py-3 2xl:mx-4">
+                         2xl:text-4xl 2xl:px-5 2xl:py-3 2xl:mx-4">
           PRO
         </span>
       </h1>
