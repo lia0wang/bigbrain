@@ -1,60 +1,126 @@
 {
-    "name": "Example Game Title",
-    "thumbnail": "https://previews.123rf.com/images/fordzolo/fordzolo1506/fordzolo150600296/41026708-example-white-stamp-text-on-red-backgroud.jpg",
+    "name": "Example Quiz for Jay",
+    "thumbnail": "https://i.ytimg.com/vi/F_OCgbYNs_w/hqdefault.jpg",
     "questions": [
         {
-            "title": "Example question 1: what year did Jay Chou born?",
-            "media": "https://i.ytimg.com/vi/F_OCgbYNs_w/hqdefault.jpg",
-            "type": "multi",
-            "timeLimit": 10,
-            "points": 200,
-            "answers": [
-                {
-                    "answer": {
-                        "content": "1977",
-                        "isCorrect": false
+            "question": {
+                "id": "1",
+                "title": "Example question 1: what year did Jay Chou born?",
+                "media": "https://previews.123rf.com/images/fordzolo/fordzolo1506/fordzolo150600296/41026708-example-white-stamp-text-on-red-backgroud.jpg",
+                "type": "multi",
+                "timeLimit": 30,
+                "points": 200,
+                "answers": [
+                    {
+                        "answer": {
+                            "id": "1",
+                            "content": "1977",
+                            "isCorrect": false
+                        }
+                    },
+                    {
+                        "answer": {
+                            "id": "2",
+                            "content": "1978",
+                            "isCorrect": true
+                        }
+                    },
+                    {
+                        "answer": {
+                            "id": "3",
+                            "content": "1979",
+                            "isCorrect": false
+                        }
+                    },
+                    {
+                        "answer": {
+                            "id": "4",
+                            "content": "Year 1978",
+                            "isCorrect": true
+                        }
                     }
-                },
-                {
-                    "answer": {
-                        "content": "1978",
-                        "isCorrect": true
-                    }
-                },
-                {
-                    "answer": {
-                        "content": "1979",
-                        "isCorrect": false
-                    }
-                },
-                {
-                    "answer": {
-                        "content": "Year 1978",
-                        "isCorrect": true
-                    }
-                }
-            ]
+                ]
+            }
         },
         {
-            "title": "Example question 2: did Hebe Tien born in March?",
-            "media": "https://i.ytimg.com/vi/F_OCgbYNs_w/hqdefault.jpg",
-            "type": "single",
-            "timeLimit": 20,
-            "points": 100,
-            "answers": [
-                {
-                    "answer": {
-                        "content": "Yes",
-                        "isCorrect": true
+            "question": {
+                "id": "2",
+                "title": "Example question 2: did Hebe Tien born in March?",
+                "media": "https://i.ytimg.com/vi/F_OCgbYNs_w/hqdefault.jpg",
+                "type": "single",
+                "timeLimit": 40,
+                "points": 100,
+                "answers": [
+                    {
+                        "answer": {
+                            "id": "5",
+                            "content": "Yes",
+                            "isCorrect": true
+                        }
+                    },
+                    {
+                        "answer": {
+                            "id": "6",
+                            "content": "No",
+                            "isCorrect": false
+                        }
                     }
-                },
-                {
-                    "answer": {
-                        "content": "No",
-                        "isCorrect": false
+                ]
+            }
+        },
+        {
+            "question": {
+                "id": "3",
+                "title": "Example question 3: Which year they meet each other in the UK",
+                "media": "https://www.youtube.com/watch?v=F_OCgbYNs_w&ab_channel=happywah",
+                "type": "single",
+                "timeLimit": 40,
+                "points": 100,
+                "answers": [
+                    {
+                        "answer": {
+                            "id": "7",
+                            "content": "2001",
+                            "isCorrect": true
+                        }
+                    },
+                    {
+                        "answer": {
+                            "id": "8",
+                            "content": "2002",
+                            "isCorrect": false
+                        }
+                    },
+                    {
+                        "answer": {
+                            "id": "9",
+                            "content": "2003",
+                            "isCorrect": false
+                        }
+                    },
+                    {
+                        "answer": {
+                            "id": "10",
+                            "content": "2004",
+                            "isCorrect": false
+                        }
+                    },
+                    {
+                        "answer": {
+                            "id": "11",
+                            "content": "2005",
+                            "isCorrect": false
+                        }
+                    },
+                    {
+                        "answer": {
+                            "id": "12",
+                            "content": "2006",
+                            "isCorrect": true
+                        }
                     }
-                }
-            ]
+                ]
+            }
         }
     ]
 }

@@ -17,7 +17,7 @@ interface Question {
   id: string;
   title: string;
   media: string;
-  type: 'single' | 'multiple';
+  type: 'single' | 'multi';
   timeLimit: number;
   point: number;
   answers: Array<{ answer: Answer }>;

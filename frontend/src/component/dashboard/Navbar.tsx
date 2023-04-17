@@ -10,7 +10,7 @@ import AuthLoginButton from '../auth/AuthLoginButton';
 const Navbar: React.FC<{
   pageType?: string;
 }> = ({ pageType }) => {
-  const [name, setName] = useState('');
+  const [gameData, setGameData] = useState(null);
   const [isGameCreated, setIsGameCreated] = useState(false);
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -23,9 +23,15 @@ const Navbar: React.FC<{
     setShowCreateModal(false);
   };
 
-  const createGame = (name: string) => {
-    apiRequest('POST', '/admin/quiz/new', { name })
-    setName(name);
+  const createGame = async (gameData: JSON) => {
+    const resp = await apiRequest('POST', '/admin/quiz/new', gameData);
+    // if gameData has other fields than name, we call update
+    console.log(gameData);
+    console.log(Object.keys(gameData).length);
+    if (Object.keys(gameData).length > 1) {
+      await apiRequest('PUT', `/admin/quiz/${resp.quizId}`, gameData);
+    }
+    setGameData(gameData);
     setIsGameCreated(true);
   };
 
@@ -63,7 +69,7 @@ const Navbar: React.FC<{
         />
       )}
       {isGameCreated && (
-        <AuthErrorPopup error={`${name} created successfully`} />
+        <AuthErrorPopup error={`${gameData.name} created successfully`} />
       )}
     </nav>
   );

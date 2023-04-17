@@ -251,6 +251,8 @@ const EditQuestionPage: React.FC<{ qId: string; gameId: string }> = ({
             <div className="flex flex-row justify-evenly mt-[-40px]">
               <div className="flex flex-col justify-center items-center">
                 <TextField
+                  className="w-[250px]"
+                  multiline
                   size="small"
                   type="text"
                   value={title}
