@@ -14,10 +14,12 @@ const GameCard: React.FC<{
   title: string;
   thumbnail: string;
   id: number;
+  active: string;
 }> = ({
   title,
   thumbnail,
   id,
+  active,
 }) => {
   const [numQuestions, setNumQuestions] = useState(0);
   const [questionList, setQuestionList] = useState([]);
@@ -35,6 +37,7 @@ const GameCard: React.FC<{
       setQuestionList(response.questions);
     };
     fetchGameUseGameId();
+    setSessionId(active);
   }, [id]);
 
   useEffect(() => {

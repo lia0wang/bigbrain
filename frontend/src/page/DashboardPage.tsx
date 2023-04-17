@@ -40,7 +40,7 @@ const DashboardPage: React.FC = () => {
                 .sort((gameA, gameB) => new Date(gameB.createdAt).getTime() - new Date(gameA.createdAt).getTime())
                 .map((game, index) => (
                   <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-                    <GameCard title={game.name} thumbnail={game.thumbnail} id={game.id} />
+                    <GameCard title={game.name} thumbnail={game.thumbnail} id={game.id} active={game.active}/>
                   </Grid>
                 ))}
             </Grid>
