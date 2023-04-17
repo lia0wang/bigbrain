@@ -8,6 +8,11 @@ import { uid } from 'uid';
 import EditQuestionPage from './EditQuestionPage';
 import { fileToDataUrl, resizeImage } from '../../util/imageHandler';
 
+interface Answer {
+  id: string;
+  content: string;
+  isCorrect: boolean;
+}
 interface Question {
   id: string;
   title: string;
@@ -15,7 +20,7 @@ interface Question {
   type: 'single' | 'multiple';
   timeLimit: number;
   point: number;
-  answers: Array<{ answer: string }>;
+  answers: Array<{ answer: Answer }>;
 }
 
 interface GameApiResponse extends ApiResponse {
@@ -144,8 +149,6 @@ const EditGamePage: React.FC = () => {
         ...resp
       });
 
-      // setResp({ ...resp })
-
       console.log(gameData.questions);
       console.log(gameData.thumbnail);
 
@@ -160,7 +163,6 @@ const EditGamePage: React.FC = () => {
       setResp({ ...resp });
       setGameName(gameData.name);
       alert('Changes saved!');
-      // console.log(gameThumbnail);
     }
   };
 
