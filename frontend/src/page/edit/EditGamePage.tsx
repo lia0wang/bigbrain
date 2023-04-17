@@ -14,7 +14,7 @@ interface Question {
   media: string;
   type: 'single' | 'multiple';
   timeLimit: number;
-  points: number;
+  point: number;
   answers: Array<{ answer: string }>;
 }
 
@@ -94,7 +94,7 @@ const EditGamePage: React.FC = () => {
         media: 'https://cdn.dribbble.com/userupload/4487190/file/original-d4c3ba33335a133315f0e2dca0332649.png?compress=1&resize=752x',
         type: 'single',
         timeLimit: 5,
-        points: 100,
+        point: 100,
         answers: [],
       },
     });

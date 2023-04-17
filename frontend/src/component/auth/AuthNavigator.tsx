@@ -7,14 +7,14 @@ const AuthNavigator: React.FC<{
 }> = ({ navPath, navText, navigate }) => {
   return (
     <div className="flex flex-col mt-[4%] ml-[10%] 2xl:mt-[2%]">
-      <p className="text-sm font-normal text-gray-600 2xl:text-2xl">
+      <p className="text-sm font-normal text-gray-600 2xl:text-xl">
         If you don&apos;t have an account.
       </p>
       <div className="flex flex-row">
-        <p className="text-sm font-normal text-gray-600 2xl:text-2xl">You can</p>
+        <p className="text-sm font-normal text-gray-600 2xl:text-xl">You can</p>
         <span
           onClick={() => navigate(navPath)}
-          className="text-lg font-semibold text-blue-500 cursor-pointer lg:text-lg 2xl:text-3xl"
+          className="text-lg font-semibold text-blue-500 cursor-pointer lg:text-lg 2xl:text-2xl"
         >
           &nbsp;{navText} Here!
         </span>

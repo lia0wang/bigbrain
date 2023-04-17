@@ -82,9 +82,11 @@ const SessionAdminPage: React.FC = () => {
       setPollPlayerIntervalId(intervalId);
       setShowWaitingPage(true);
       setShowQuestionPage(false);
+      setShowResultPage(false);
     } else if (position >= 0 && position < totalQuestion) { // question page
       setShowWaitingPage(false);
       setShowQuestionPage(true);
+      setShowResultPage(false);
     } else if (position === totalQuestion) { // results page
       setShowWaitingPage(false);
       setShowQuestionPage(false);
@@ -109,7 +111,6 @@ const SessionAdminPage: React.FC = () => {
     if (position >= 0 && questionList) {
       if (questionList[position] == null) {
         setShowQuestionPage(false);
-        setShowResultPage(true);
       } else {
         setQuestionNo(position + 1);
         setCurrentQuestion(questionList[position]);
@@ -122,15 +123,20 @@ const SessionAdminPage: React.FC = () => {
   }, [position, questionList]); // Run the effect when position or questionList changes, new question will be set
 
   useEffect(() => {
-    let timer: NodeJS.Timeout;
-    if (timeLimit > 0) {
-      timer = setTimeout(() => {
-        setTimeLimit(timeLimit - 1);
-      }, 1000);
-    } else {
-      handleAdvance();
+    if (position >= 0 && position <= totalQuestion - 1) {
+      let timer: NodeJS.Timeout;
+      if (timeLimit > 0) {
+        timer = setTimeout(() => {
+          setTimeLimit(timeLimit - 1);
+        }, 1000);
+      } else {
+        handleAdvance();
+      }
+      return () => clearTimeout(timer);
     }
-    return () => clearTimeout(timer);
+    return () => {
+      // donothing
+    };
   }, [timeLimit]);
 
   const handleAdvance = async () => {
@@ -207,7 +213,6 @@ const SessionAdminPage: React.FC = () => {
       {showQuestionPage && (
         (deviceType === 'mobile' && (
         <>
-          <Navbar pageType="EditQuestion" />
             <div className="bg-sky-100 w-screen flex flex-col mt-24 md:mt-24 lg:mt-24">
               <div className="flex flex-row justify-evenly items-center">
                 <div className="flex flex-col items-center py-4 mt-10">
@@ -217,7 +222,7 @@ const SessionAdminPage: React.FC = () => {
                 </div>
                 {/* Title & Buttons */}
                 <div className="flex flex-row justify-evenly">
-                  <div className="flex flex-col justify-center items-center">
+                  <div className="flex flex-col justify-center items-center ml-4">
                   <div className="bg-nav-blue text-black py-2 px-4 rounded-lg max-w-[400px] shadow-xl">
                     <h1 className="mt-[1%] text-md font-medium
                                   lg:mt-0 lg:mb-0 2xl:mt-[2%]">
@@ -273,8 +278,7 @@ const SessionAdminPage: React.FC = () => {
         )) ||
         (deviceType === 'desktop' && (
           <>
-            <Navbar pageType="EditQuestion" />
-            <div className="bg-sky-100 w-screen flex flex-col md:mt-24 lg:mt-24 xl:mt-24">
+            <div className="bg-sky-100 w-screen flex flex-col md:mt-24 lg:mt-24 xl:mt-32">
               <div className="flex flex-row justify-evenly items-center">
                 <div className="flex flex-col items-center py-4 mt-10">
                 <Badge badgeContent={timeLimit} color="secondary">
@@ -283,7 +287,7 @@ const SessionAdminPage: React.FC = () => {
                 </div>
                 {/* Title & Buttons */}
                 <div className="flex flex-row justify-evenly">
-                  <div className="flex flex-col justify-center items-center">
+                  <div className="flex flex-col justify-center items-center ml-16">
                   <div className="bg-nav-blue text-black py-2 px-4 rounded-lg max-w-[400px]">
                     <h1 className="mt-[1%] text-md font-medium
                                   lg:mt-0 lg:mb-0 2xl:mt-[2%]">
@@ -342,7 +346,17 @@ const SessionAdminPage: React.FC = () => {
           </>
         ))
       )}
-      {showResultPage && (<></>)}
+
+      {showResultPage && (
+        <>
+        {/*
+        - Table of up to top 5 users and their score
+        - Bar/Line chart showing a breakdown of what percentage of people (Y axis) got certain questions (X axis) correct
+        - Some chart showing the average response/answer time for each question
+        - Any other interesting information you see fit
+        */}
+        </>
+      )}
       </div>
   );
 };
