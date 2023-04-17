@@ -30,11 +30,13 @@ const SessionPlayerPage: React.FC = () => {
   const [title, setTitle] = useState('');
   const [media, setMedia] = useState('');
   const [answers, setAnswers] = useState([]);
-  const [timeLimit, setTimeLimit] = useState(0);
+  const [currentCountdownTime, setCurrentCountdownTime] = useState(null);
   const [point, setPoint] = useState(0);
   const [clicked, setClicked] = useState(false);
   const [userScore, setUserScore] = useState(0);
   const [correctAnswerIds, setCorrectAnswerIds] = useState([]);
+  const [questionNo, setQuestionNo] = useState(-1); // -1 is waiting lobby, 0 is the first question
+  const [questionId, setQuestionId] = useState(null);
 
   let colorIndex = 0;
 
@@ -121,21 +123,6 @@ const SessionPlayerPage: React.FC = () => {
     }
   };
 
-  const countDownTimerRef = useRef<NodeJS.Timeout>();
-
-  useEffect(() => {
-    if (timeLimit > 0) {
-      countDownTimerRef.current = setTimeout(() => {
-        setTimeLimit(timeLimit - 1);
-      }, 1000);
-    }
-    return () => {
-      if (countDownTimerRef.current) {
-        clearTimeout(countDownTimerRef.current);
-      }
-    };
-  }, [timeLimit]);
-
   const fetchIsGameStarted = async () => {
     if (playerId) {
       const response = await apiRequest('GET', `/play/${playerId}/status`);
@@ -155,29 +142,52 @@ const SessionPlayerPage: React.FC = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  const fetchCorrectAnswers = async () => {
+    // resp = [
+    // {
+    //   "answerIds": [
+    //     0
+    //   ]
+    // }
+    console.log('fetching correct answers');
+    if (playerId) {
+      console.log('playerId:', playerId);
+      const response = await apiRequest('GET', `/play/${playerId}/answer`); // TODO FIX 400 bad request error
+      console.log('response:', response.answerIds);
+      setCorrectAnswerIds(response.answerIds);
+    }
+  };
+
+  const fetchCurrentQuestion = async () => { // TODO: when response is return 400, clear interval and display results page
+    if (playerId) {
+      const response = await apiRequest('GET', `/play/${playerId}/question`);
+      setCurrentQuestion(response.question.question);
+      // console.log('response.question.question:', response.question.question);
+      setQuestionId(response.question.question.id);
+      if (response.question.question.timeLimit && response.question.isoTimeLastQuestionStarted) {
+        // calculate current time minus "isoTimeLastQuestionStarted": "2020-10-31T14:45:21.077Z"
+        const remainingTime = Math.floor(response.question.question.timeLimit - (Date.now() - new Date(response.question.isoTimeLastQuestionStarted).getTime()) / 1000);
+        // console.log('remainingTime:', remainingTime);
+        setCurrentCountdownTime(remainingTime);
+      }
+    }
+  };
+
   useEffect(() => {
-    const fetchCorrectAnswers = async () => {
-      console.log('fetching correct answers');
-      if (playerId) {
-        console.log('playerId:', playerId);
-        const response = await apiRequest('GET', `/play/${playerId}/answer/`, { playerId });
-        console.log('response:', response.answerIds);
-        setCorrectAnswerIds(response.answerIds);
+    if (playerId) {
+      setTitle(currentQuestion.title);
+      setMedia(currentQuestion.media);
+      setAnswers(currentQuestion.answers);
+      setPoint(currentQuestion.point);
+      if (questionNo >= 1) { // fetch correct answers after the first question has finished
+        fetchCorrectAnswers();
       }
-    };
+    }
+    setQuestionNo(questionNo + 1);
+    console.log('questionNo:', questionNo);
+  }, [questionId]); // every time currentQuestion changes, update the state, fetch correct answers
 
-    const fetchCurrentQuestion = async () => {
-      if (playerId) {
-        const response = await apiRequest('GET', `/play/${playerId}/question`);
-        setCurrentQuestion(response.question.question);
-        setTitle(response.question.question.title);
-        setMedia(response.question.question.media);
-        setAnswers(response.question.question.answers);
-        setPoint(response.question.question.point);
-        setTimeLimit(response.question.question.timeLimit);
-      }
-    };
-
+  useEffect(() => {
     if (!isGameStarted) {
       const intervalId = setInterval(async () => {
         await fetchIsGameStarted();
@@ -187,7 +197,6 @@ const SessionPlayerPage: React.FC = () => {
       pollGameStatusIntervalId && clearInterval(pollGameStatusIntervalId);
       const intervalId = setInterval(async () => {
         await fetchCurrentQuestion();
-        await fetchCorrectAnswers();
       }, POLLING_INTERVAL); // polling current question
       setPollQuestionIntervalId(intervalId);
     }
@@ -239,7 +248,7 @@ const SessionPlayerPage: React.FC = () => {
               <div className="bg-sky-100 w-screen flex flex-col mt-24 md:mt-24 lg:mt-24">
                 <div className="flex flex-row justify-center items-center">
                   <div className="flex flex-col items-center py-4 mt-10">
-                  <Badge badgeContent={timeLimit} color="secondary" className='mr-12'>
+                  <Badge badgeContent={currentCountdownTime} color="secondary" className='mr-12'>
                     <AccessTimeFilledIcon color='primary' fontSize='large' />
                   </Badge>
                   </div>
@@ -299,7 +308,7 @@ const SessionPlayerPage: React.FC = () => {
               <div className="bg-sky-100 w-screen flex flex-col md:mt-24 lg:mt-24 xl:mt-32">
                 <div className="flex flex-row justify-center items-center">
                   <div className="flex flex-col items-center py-4 mt-10">
-                  <Badge badgeContent={timeLimit} color="secondary" className='mr-12'>
+                  <Badge badgeContent={currentCountdownTime} color="secondary" className='mr-12'>
                     <AccessTimeFilledIcon color='primary' fontSize='large' />
                   </Badge>
                   </div>
