@@ -6,9 +6,7 @@ const ButtonBlue: React.FC<{
 }> = ({ text, onClick }) => {
   return (
     <button
-      className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 mx-2
-                w-32 h-12 text-lg
-                rounded lg:rounded-lg
+      className="bg-blue-500 hover:bg-blue-400 text-white font-bold py-2 px-4 mx-2 lg:rounded-lg
                 border-b-4 border-blue-800 hover:border-blue-700 rounded"
       onClick={onClick}
     >
