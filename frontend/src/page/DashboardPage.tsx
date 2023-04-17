@@ -68,7 +68,7 @@ const DashboardPage: React.FC = () => {
                   <CloseIcon className="cursor-pointer" onClick={() => setShowNewGameModal(false)} />
                 </div>
                 <div className="bg-gray-100 p-2 rounded-lg mb-4 flex justify-center">
-                  <Input className="w-[300px]" type="text" onChange={(e) => setSessionId(e.target.value)} />
+                  <Input placeholder='Example: 902663' className="w-[300px]" type="text" onChange={(e) => setSessionId(e.target.value)} />
                 </div>
                 <div className="flex flex-row justify-around mt-2">
                   <button
