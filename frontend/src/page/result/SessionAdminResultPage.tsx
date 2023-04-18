@@ -25,7 +25,7 @@ interface Question {
 
 const SessionAdminResultPage: React.FC<{
   sessionId: string,
-  questionList: Array<{ question: Question }>,
+  questionList: Question[],
 }> = ({
   sessionId,
   questionList
@@ -39,24 +39,25 @@ const SessionAdminResultPage: React.FC<{
 
   useEffect(() => {
     const fetchAdminResult = async () => {
+      console.log('fetching admin result');
       const response = await apiRequest('GET', `/admin/session/${sessionId}/results`);
       if (response.error) {
         return;
       }
-      console.log('response', response);
-      setAdminResult(response);
+      setAdminResult(response.results);
     }
     fetchAdminResult();
-  }, [sessionId]);
+  }, []);
 
   return (
       <>
-        <Box className="w-full mt-24">
-          <Tabs value={value} onChange={handleChange} centered>
-            <Tab label="Top Scorers Leaderboard" />
-            <Tab label="Worst Scorers Leaderboard" />
-            <Tab label="Question Accuracy Over Time" />
-            <Tab label="Response Time Analysis" />
+        <Box className="mt-24 mx-auto
+                        max-w-sm sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl">
+          <Tabs value={value} onChange={handleChange} variant="scrollable" scrollButtons="auto">
+            <Tab label="Top Scorers" />
+            <Tab label="Worst Scorers" />
+            <Tab label="Question Accuracy" />
+            <Tab label="Response Time" />
           </Tabs>
         </Box>
         {value === 0 && (

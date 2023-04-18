@@ -1,4 +1,13 @@
-import React from 'react';
+import * as React from 'react';
+import { styled } from '@mui/material/styles';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell, { tableCellClasses } from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import LoadingPage from '../../page/LoadingPage';
 
 interface Answer {
     id: string;
@@ -16,7 +25,7 @@ interface Question {
     answers: Array<{ answer: Answer }>;
 }
 
-interface UserAnswers {
+interface UserAnswer {
     name: string;
     answers: {
       questionStartedAt: Date | null;
@@ -26,68 +35,82 @@ interface UserAnswers {
     }[];
 }
 
-interface AdminResult {
-    results: UserAnswers[];
-}
+const StyledTableCell = styled(TableCell)(({ theme }) => ({
+  [`&.${tableCellClasses.head}`]: {
+    backgroundColor: theme.palette.common.black,
+    color: theme.palette.common.white,
+  },
+  [`&.${tableCellClasses.body}`]: {
+    fontSize: 14,
+  },
+}));
+
+const StyledTableRow = styled(TableRow)(({ theme }) => ({
+  '&:nth-of-type(odd)': {
+    backgroundColor: theme.palette.action.hover,
+  },
+  // hide last border
+  '&:last-child td, &:last-child th': {
+    border: 0,
+  },
+}));
 
 const RankingBoard: React.FC<{
-    adminResult: AdminResult,
-    questionList: Array<{ question: Question }>,
+    adminResult: UserAnswer[],
+    questionList: Question[],
     reverse: boolean,
 }> = ({
   adminResult,
   questionList,
   reverse
 }) => {
-  // Calculate total points for each player
-//   console.log('adminResult', adminResult);
-//   const totalPoints = adminResult.results.map(player => {
-//     const point = player.answers.reduce((acc, ans, i) => {
-//       const question = questionList.question[i];
-//       const isCorrect = ans.correct;
-//       const point = question.point;
-//       return isCorrect ? acc + point : acc;
-//     }, 0);
-//     return { name: player.name, point };
-//   });
-
-  //   // Sort players by total points
-  //   const sortedPlayers = totalPoints.sort((a, b) => b.point - a.point);
-
-  //   // Display top 5 players
-  //   console.log('Ranking Board:');
-  //   console.log('--------------');
-  //   sortedPlayers.slice(0, 5).forEach((player, i) => {
-  //     console.log(`${i + 1}. ${player.name}: ${player.point} points`);
-  //   });
-
-  console.log('adminResult', adminResult);
-  adminResult.results.forEach(player => {
-    console.log('player', player);
-  });
-  console.log('questionList', questionList);
-  for (let i = 0; i < questionList.length; i++) {
-    console.log('question', questionList[i].question);
+  if (adminResult === null) {
+    return < LoadingPage />;
   }
 
-  const totalPoints = adminResult.results.map(player => {
+  if (adminResult.length === 0) {
+    return <h1>No players</h1>;
+  }
+
+  const totalPoints = adminResult.map(player => {
     const point = player.answers.reduce((acc, ans, i) => {
-      const question = questionList[i].question;
-      const point = question.point;
+      const question = questionList[i];
       const isCorrect = ans.correct;
+      const point = question.point;
       return isCorrect ? acc + point : acc;
     }, 0);
     return { name: player.name, point };
   });
 
-  const sortedPlayers = reverse ? totalPoints.sort((a, b) => a.point - b.point) : totalPoints.sort((a, b) => b.point - a.point);
+  const sortedPlayers = reverse
+    ? totalPoints.sort((a, b) => a.point - b.point)
+    : totalPoints.sort((a, b) => b.point - a.point);
 
   return (
     <>
-        <h1>RankingBoard</h1>
-        <pre> reverse: {JSON.stringify(reverse, null, 2)} </pre>
-        <pre> adminResult: {JSON.stringify(adminResult, null, 2)} </pre>
-        <pre> questionList: {JSON.stringify(questionList, null, 2)} </pre>
+      <TableContainer component={Paper}
+      className="mt-8 mx-auto max-w-sm sm:max-w-sm md:max-w-md lg:max-w-lg xl:max-w-2xl">
+        <Table>
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>Ranking #</StyledTableCell>
+              <StyledTableCell>Name</StyledTableCell>
+              <StyledTableCell align="right">Points</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {sortedPlayers.map((row, index) => (
+              <StyledTableRow key={row.name}>
+                <StyledTableCell component="th" scope="row">
+                  {index + 1}
+                </StyledTableCell>
+                <StyledTableCell>{row.name}</StyledTableCell>
+                <StyledTableCell align="right">{row.point}</StyledTableCell>
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </>
   );
 }
