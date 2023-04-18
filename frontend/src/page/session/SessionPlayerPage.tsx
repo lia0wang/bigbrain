@@ -43,6 +43,7 @@ const SessionPlayerPage: React.FC = () => {
   const [questionIdList, setQuestionIdList] = useState([]);
 
   let colorIndex = 0;
+  // console.log(playerId);
 
   const colors = [
     'bg-blue-500',
@@ -158,7 +159,7 @@ const SessionPlayerPage: React.FC = () => {
 
   const fetchCurrentQuestion = async () => { // TODO: when response is return 400, clear interval and display results page
     const response = await apiRequest('GET', `/play/${playerId}/question`);
-    console.log('response:', response);
+    // console.log('response:', response);
     if (playerId && !response.error) {
       setCurrentQuestion(response.question.question);
       // console.log('response.question.question:', response.question.question);
@@ -167,7 +168,11 @@ const SessionPlayerPage: React.FC = () => {
         // calculate current time minus "isoTimeLastQuestionStarted": "2020-10-31T14:45:21.077Z"
         const remainingTime = Math.ceil(response.question.question.timeLimit - (Date.now() - new Date(response.question.isoTimeLastQuestionStarted).getTime()) / 1000);
         // console.log('remainingTime:', remainingTime);
-        setCurrentCountdownTime(remainingTime);
+        if (remainingTime > 0) {
+          setCurrentCountdownTime(remainingTime);
+        } else {
+          setCurrentCountdownTime(0);
+        }
       }
     } else {
       console.log('response.error:', response.error);
@@ -178,6 +183,7 @@ const SessionPlayerPage: React.FC = () => {
 
   useEffect(() => {
     if (playerId) {
+      console.log('playerId:', playerId);
       setTitle(currentQuestion.title);
       setMedia(currentQuestion.media);
       setAnswers(currentQuestion.answers);

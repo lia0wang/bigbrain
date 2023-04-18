@@ -12,6 +12,7 @@ import Badge from '@mui/material/Badge';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
 import SessionAdminResultPage from '../result/SessionAdminResultPage';
+import ViewResultModal from '../../modal/ViewResultModal';
 
 const SessionAdminPage: React.FC = () => {
   const { sessionId } = useParams();
@@ -33,6 +34,8 @@ const SessionAdminPage: React.FC = () => {
   const [media, setMedia] = useState('');
   const [answers, setAnswers] = useState([]);
   const [timeLimit, setTimeLimit] = useState(0);
+  const [showViewGameModal, setShowViewGameModal] = useState(false);
+  // const [isCurrent
   let colorIndex = 0;
 
   const colors = [
@@ -131,7 +134,7 @@ const SessionAdminPage: React.FC = () => {
           setTimeLimit(timeLimit - 1);
         }, 1000);
       } else {
-        handleAdvance();
+        // handleAdvance();
       }
       return () => clearTimeout(timer);
     }
@@ -144,6 +147,16 @@ const SessionAdminPage: React.FC = () => {
     const resp = await apiRequest('POST', `/admin/quiz/${quizId}/advance`, { quizId });
     setPosition(resp.stage);
     pollPlayerIntervalId && clearInterval(pollPlayerIntervalId);
+  };
+
+  const handleEndGame = async () => {
+    await apiRequest('POST', `/admin/quiz/${quizId}/end`, { quizId });
+    setShowViewGameModal(true);
+  };
+
+  const showResult = async () => {
+    setPosition(totalQuestion);
+    setShowViewGameModal(false);
   };
 
   const renderColorAnswer = (text: string) => {
@@ -165,7 +178,12 @@ const SessionAdminPage: React.FC = () => {
 
   return (
     <div className="bg-sky-100 min-h-screen flex flex-col content-center">
-      <Navbar />
+      <Navbar/>
+      {showViewGameModal && (
+        <ViewResultModal
+          onConfirm={ showResult }
+        />
+      )}
       {showWaitingPage && (
         <>
         <div className="container mx-auto px-4 sm:max-w-sm bg-sky-100 min-h-screen">
@@ -302,14 +320,22 @@ const SessionAdminPage: React.FC = () => {
                     />
                   </div>
                 </div>
-                <div className="flex flex-col items-center py-4 mt-10">
+                <div className="flex flex-col items-center py-4 mt-10 gap-4">
                 <Button
                   variant="contained"
                   color="primary"
                   startIcon={<ArrowForwardIosIcon />}
                   onClick={handleAdvance}
                 >
-                  Skip
+                  Next
+                </Button>
+                <Button
+                  variant="contained"
+                  color="error"
+                  // startIcon={<ArrowForwardIosIcon />}
+                  onClick={handleEndGame}
+                >
+                  Stop Session
                 </Button>
                 </div>
               </div>
