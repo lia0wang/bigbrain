@@ -11,6 +11,7 @@ import { isMobileWidth, isDesktopWidth } from '../../util/media';
 import Badge from '@mui/material/Badge';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
+import SessionAdminResultPage from './SessionAdminResultPage';
 
 const SessionAdminPage: React.FC = () => {
   const { sessionId } = useParams();
@@ -349,12 +350,7 @@ const SessionAdminPage: React.FC = () => {
 
       {showResultPage && (
         <>
-        {/*
-        - Table of up to top 5 users and their score
-        - Bar/Line chart showing a breakdown of what percentage of people (Y axis) got certain questions (X axis) correct
-        - Some chart showing the average response/answer time for each question
-        - Any other interesting information you see fit
-        */}
+          < SessionAdminResultPage />
         </>
       )}
       </div>
