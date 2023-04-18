@@ -10,3 +10,7 @@
 
 - Quiz admin page can refresh the page without losing the state and session, or return to home page by clicking the logo and come back to the quiz by clicking the session ID and "GO TO SESSION ADMIN PAGE", this also will return to the same stage of the quiz (waiting lobby, the current quiz etc.)
 
+- The admin is also able to stop a session on dashboard page, and the session will be stopped immediately and the users will be redirected to the home page, this makes the management of the session more convenient, and with the ability to return to the session admin page correctly, the admin can run and manage multiple sessions at the same time easily.
+
+- On player session page, single and multiple choice questions will have different UI effect, the answer button will response differently when the user when use clicks it. On single choice question, the answer button will be highlighted when the user clicks it, and the any other button that selected will be unselected. On multiple choice question, the answer button will be highlighted when the user clicks it, and the button will be unselected when the user clicks it again. This makes the user experience more intuitive and convenient.
+-

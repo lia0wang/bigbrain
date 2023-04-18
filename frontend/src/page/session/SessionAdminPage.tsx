@@ -35,6 +35,7 @@ const SessionAdminPage: React.FC = () => {
   const [answers, setAnswers] = useState([]);
   const [timeLimit, setTimeLimit] = useState(0);
   const [showViewGameModal, setShowViewGameModal] = useState(false);
+  const [isDuringQuestion, setIsDuringQuestion] = useState(false);
   // const [isCurrent
   let colorIndex = 0;
 
@@ -134,7 +135,7 @@ const SessionAdminPage: React.FC = () => {
           setTimeLimit(timeLimit - 1);
         }, 1000);
       } else {
-        // handleAdvance();
+        setIsDuringQuestion(false);
       }
       return () => clearTimeout(timer);
     }
@@ -146,6 +147,7 @@ const SessionAdminPage: React.FC = () => {
   const handleAdvance = async () => {
     const resp = await apiRequest('POST', `/admin/quiz/${quizId}/advance`, { quizId });
     setPosition(resp.stage);
+    setIsDuringQuestion(true);
     pollPlayerIntervalId && clearInterval(pollPlayerIntervalId);
   };
 
@@ -172,82 +174,82 @@ const SessionAdminPage: React.FC = () => {
         <h1 className="font-medium text-md">
           {text}
         </h1>
-    </div>
+      </div>
     );
   };
 
   return (
     <div className="bg-sky-100 min-h-screen flex flex-col content-center">
-      <Navbar/>
+      <Navbar />
       {showViewGameModal && (
         <ViewResultModal
-          onConfirm={ showResult }
+          onConfirm={showResult}
         />
       )}
       {showWaitingPage && (
         <>
-        <div className="container mx-auto px-4 sm:max-w-sm bg-sky-100 min-h-screen">
-          <div className="text-center mt-[100px] mb-4">
-            <Typography variant="h4" component="h2">
-              Quiz: {gameTitle}
-            </Typography>
+          <div className="container mx-auto px-4 sm:max-w-sm bg-sky-100 min-h-screen">
+            <div className="text-center mt-[100px] mb-4">
+              <Typography variant="h4" component="h2">
+                Quiz: {gameTitle}
+              </Typography>
+            </div>
+            <div className="text-center mt-6">
+              <Button
+                variant="contained"
+                color="primary"
+                startIcon={<PlayArrow />}
+                onClick={handleAdvance}
+              >
+                Start Quiz
+              </Button>
+            </div>
+            <div className="text-center mt-6 mb-4">
+              <Typography variant="h5" component="h2">
+                Join the quiz by code {sessionId}
+              </Typography>
+            </div>
+            <div className="text-center mt-6 mb-4">
+              <Typography variant="h4" component="h2">
+                Players
+              </Typography>
+            </div>
+            <List className="mt-4 grid grid-cols-2 gap-1">
+              {players.map((player, index) => (
+                <div key={index} className="justify-center p-1">
+                  <Card>
+                    <CardContent>
+                      <Typography variant="body2" align="center">
+                        {player}
+                      </Typography>
+                    </CardContent>
+                  </Card>
+                </div>
+              ))}
+            </List>
           </div>
-          <div className="text-center mt-6">
-            <Button
-              variant="contained"
-              color="primary"
-              startIcon={<PlayArrow />}
-              onClick={handleAdvance}
-            >
-              Start Quiz
-            </Button>
-          </div>
-          <div className="text-center mt-6 mb-4">
-            <Typography variant="h5" component="h2">
-              Join the quiz by code {sessionId}
-            </Typography>
-          </div>
-          <div className="text-center mt-6 mb-4">
-            <Typography variant="h4" component="h2">
-              Players
-            </Typography>
-          </div>
-          <List className="mt-4 grid grid-cols-2 gap-1">
-            {players.map((player, index) => (
-              <div key={index} className="justify-center p-1">
-                <Card>
-                  <CardContent>
-                    <Typography variant="body2" align="center">
-                      {player}
-                    </Typography>
-                  </CardContent>
-                </Card>
-              </div>
-            ))}
-          </List>
-        </div>
         </>
       )}
 
       {showQuestionPage && (
         (deviceType === 'mobile' && (
-        <>
+          <>
             <div className="bg-sky-100 w-screen flex flex-col mt-24 md:mt-24 lg:mt-24">
               <div className="flex flex-row justify-evenly items-center">
                 <div className="flex flex-col items-center py-4 mt-10">
-                <Badge badgeContent={timeLimit} color="secondary">
-                  <AccessTimeFilledIcon color='primary' fontSize='large' />
-                </Badge>
+                  <Badge badgeContent={timeLimit} color="secondary">
+                    <AccessTimeFilledIcon color='primary' fontSize='large' />
+                  </Badge>
                 </div>
                 {/* Title & Buttons */}
                 <div className="flex flex-row justify-evenly">
                   <div className="flex flex-col justify-center items-center ml-4">
-                  <div className="bg-nav-blue text-black py-2 px-4 rounded-lg max-w-[400px] shadow-xl">
-                    <h1 className="mt-[1%] text-md font-medium
+                    <div className="bg-nav-blue text-black py-2 px-4 rounded-lg max-w-[400px] shadow-xl">
+                      <h1 className="mt-[1%] text-md font-medium
                                   lg:mt-0 lg:mb-0 2xl:mt-[2%]">
-                      {title}
-                    </h1>
-                  </div>
+                        {title}
+                      </h1>
+                    </div>
                     <img
                       className="w-[150px] h-[150px]
                       sm:w-[220px] sm:h-[220px]
@@ -257,9 +259,26 @@ const SessionAdminPage: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex flex-col items-center py-4 mt-10">
-                  <IconButton onClick={handleAdvance}>
-                    <ArrowCircleRightIcon color='primary' fontSize='large' />
-                  </IconButton>
+                <div className="flex flex-col items-center py-4 mt-10 gap-4">
+                  <Typography variant="h6" component="h3">{questionNo} / {totalQuestion}</Typography>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="small"
+                    startIcon={<ArrowForwardIosIcon />}
+                    onClick={handleAdvance}
+                  >
+                    {isDuringQuestion ? 'Skip Question' : 'Next Question'}
+                  </Button>
+                  <Button
+                    size="small"
+                    variant="contained"
+                    color="error"
+                    onClick={handleEndGame}
+                  >
+                    Stop Session
+                  </Button>
+                </div>
                 </div>
               </div>
               {/* Answers */}
@@ -300,19 +319,19 @@ const SessionAdminPage: React.FC = () => {
             <div className="bg-sky-100 w-screen flex flex-col md:mt-24 lg:mt-24 xl:mt-32">
               <div className="flex flex-row justify-evenly items-center">
                 <div className="flex flex-col items-center py-4 mt-10">
-                <Badge badgeContent={timeLimit} color="secondary">
-                  <AccessTimeFilledIcon color='primary' fontSize='large' />
-                </Badge>
+                  <Badge badgeContent={timeLimit} color="secondary">
+                    <AccessTimeFilledIcon color='primary' fontSize='large' />
+                  </Badge>
                 </div>
                 {/* Title & Buttons */}
                 <div className="flex flex-row justify-evenly">
                   <div className="flex flex-col justify-center items-center ml-16">
-                  <div className="bg-nav-blue text-black py-2 px-4 rounded-lg max-w-[400px]">
-                    <h1 className="mt-[1%] text-md font-medium
-                                  lg:mt-0 lg:mb-0 2xl:mt-[2%]">
-                      {title}
-                    </h1>
-                  </div>
+                    <div className="bg-nav-blue text-black py-2 px-4 rounded-lg max-w-[400px]">
+                      <h1 className="mt-[1%] text-2xl font-medium
+                        lg:mt-0 lg:mb-0 lg:text-3xl 2xl:mt-[2%] 2xl:text-3xl">
+                        {title}
+                      </h1>
+                    </div>
                     <img
                       className="md:w-[220px] md:h-[220px]
                       object-cover rounded-lg mt-4"
@@ -321,22 +340,24 @@ const SessionAdminPage: React.FC = () => {
                   </div>
                 </div>
                 <div className="flex flex-col items-center py-4 mt-10 gap-4">
-                <Button
-                  variant="contained"
-                  color="primary"
-                  startIcon={<ArrowForwardIosIcon />}
-                  onClick={handleAdvance}
-                >
-                  Next
-                </Button>
-                <Button
-                  variant="contained"
-                  color="error"
-                  // startIcon={<ArrowForwardIosIcon />}
-                  onClick={handleEndGame}
-                >
-                  Stop Session
-                </Button>
+                  <Typography variant="h6" component="h3">{questionNo} / {totalQuestion}</Typography>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<ArrowForwardIosIcon />}
+                    onClick={handleAdvance}
+                  >
+                    {isDuringQuestion ? 'Skip Question' : 'Next Question'}
+                  </Button>
+
+                  <Button
+                    variant="contained"
+                    color="error"
+                    // startIcon={<ArrowForwardIosIcon />}
+                    onClick={handleEndGame}
+                  >
+                    Stop Session
+                  </Button>
                 </div>
               </div>
               {/* Answers */}
@@ -380,7 +401,7 @@ const SessionAdminPage: React.FC = () => {
           < SessionAdminResultPage sessionId={sessionId} questionList={questionList} />
         </>
       )}
-      </div>
+    </div>
   );
 };
 

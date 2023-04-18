@@ -41,9 +41,42 @@ const SessionPlayerPage: React.FC = () => {
   const [showResultPage, setShowResultPage] = useState(false);
   const [pointsList, setPointsList] = useState([]);
   const [questionIdList, setQuestionIdList] = useState([]);
+  // const [selectedAnswerIds, setSelectedAnswerIds] = useState(null);
+  const [currentQuestionType, setCurrentQuestionType] = useState(null);
+  const [currentAnswerIds, setCurrentAnswerIds] = useState(new Set<string>());
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
+  const handleClick = (aId: string) => {
+    if (currentQuestionType === 'single') {
+      setCurrentAnswerIds(new Set([aId]));
+    } else if (currentQuestionType === 'multi') {
+      const newAnswerIds = new Set(currentAnswerIds);
+      if (newAnswerIds.has(aId)) {
+        newAnswerIds.delete(aId);
+      } else {
+        newAnswerIds.add(aId);
+      }
+      setCurrentAnswerIds(newAnswerIds);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (currentAnswerIds.size > 0) {
+      // submit the answer
+      console.log(currentAnswerIds);
+      const currentAnswerIdsArray = Array.from(currentAnswerIds);
+      console.log(currentAnswerIdsArray);
+      await apiRequest('PUT', `/play/${playerId}/answer`, { answerIds: currentAnswerIdsArray });
+      if (correctAnswerIds.includes(currentAnswerIds)) {
+        setUserScore(userScore + point);
+      }
+      // reset currentAnswerIds
+      setCurrentAnswerIds(new Set());
+      setIsSubmitted(true);
+    }
+  };
 
   let colorIndex = 0;
-  // console.log(playerId);
 
   const colors = [
     'bg-blue-500',
@@ -54,16 +87,6 @@ const SessionPlayerPage: React.FC = () => {
     'bg-pink-500',
   ];
 
-  const handleClick = async (aId: string) => {
-    setClicked(true);
-    console.log(correctAnswerIds.includes(aId));
-    // if aid is one of the correct answer ids
-    if (correctAnswerIds.includes(aId)) {
-      setUserScore(userScore + point);
-    }
-    // console.log('userScore:', userScore);
-  };
-
   const handleAnimationEnd = () => {
     setClicked(false);
   }
@@ -71,6 +94,9 @@ const SessionPlayerPage: React.FC = () => {
   const renderColorAnswer = (answer: string, aId: string) => {
     const color = colors[colorIndex];
     colorIndex = (colorIndex + 1) % colors.length;
+    const isSelected = currentAnswerIds.has(aId);
+    const borderColor = isSelected ? 'border-4 border-red-600' : '';
+
     return (
       <div
         className={`${color} text-black rounded-lg shadow-xl
@@ -79,17 +105,15 @@ const SessionPlayerPage: React.FC = () => {
                     md:py-3 lg:py-4
                     md:min-w-[300px] lg:min-w-[350px] xl:min-w-[400px]
                     ${clicked ? 'animate-waving' : ''}
-                    `}
+                    ${borderColor}`}
         style={{
           cursor: 'pointer',
         }}
         onClick={() => handleClick(aId)}
         onAnimationEnd={handleAnimationEnd}
       >
-        <h1 className="font-medium text-md">
-          {answer}
-        </h1>
-    </div>
+        <h1 className="font-medium text-md">{answer}</h1>
+      </div>
     );
   };
 
@@ -151,13 +175,13 @@ const SessionPlayerPage: React.FC = () => {
     console.log('fetching correct answers');
     if (playerId) {
       console.log('playerId:', playerId);
-      const response = await apiRequest('GET', `/play/${playerId}/answer`); // TODO FIX 400 bad request error
+      const response = await apiRequest('GET', `/play/${playerId}/answer`);
       console.log('response:', response.answerIds);
       setCorrectAnswerIds(response.answerIds);
     }
   };
 
-  const fetchCurrentQuestion = async () => { // TODO: when response is return 400, clear interval and display results page
+  const fetchCurrentQuestion = async () => {
     const response = await apiRequest('GET', `/play/${playerId}/question`);
     // console.log('response:', response);
     if (playerId && !response.error) {
@@ -170,7 +194,8 @@ const SessionPlayerPage: React.FC = () => {
         // console.log('remainingTime:', remainingTime);
         if (remainingTime > 0) {
           setCurrentCountdownTime(remainingTime);
-        } else {
+        } else if (remainingTime === 0) {
+          fetchCorrectAnswers();
           setCurrentCountdownTime(0);
         }
       }
@@ -190,9 +215,8 @@ const SessionPlayerPage: React.FC = () => {
       setPoint(currentQuestion.point);
       setPointsList(pointsList => [...pointsList, currentQuestion.point]);
       setQuestionIdList(questionIdList => [...questionIdList, currentQuestion.id]);
-      if (questionNo >= 1) { // fetch correct answers after the first question has finished
-        fetchCorrectAnswers();
-      }
+      setCurrentQuestionType(currentQuestion.type);
+      setIsSubmitted(false);
     }
     setQuestionNo(questionNo + 1);
     console.log('questionNo:', questionNo);
@@ -226,7 +250,6 @@ const SessionPlayerPage: React.FC = () => {
               <Typography variant="h4" component="h1">
                 Waiting Lobby
               </Typography>
-              {/* <Typography>Your identification: {playerId}</Typography> */}
               <Typography variant="h6" component="h3">
                 Hello, {playerName}! <br />
                 Kindly wait for the administrator to initiate the game :)
@@ -259,19 +282,19 @@ const SessionPlayerPage: React.FC = () => {
               <div className="bg-sky-100 w-screen flex flex-col mt-24 md:mt-24 lg:mt-24">
                 <div className="flex flex-row justify-center items-center">
                   <div className="flex flex-col items-center py-4 mt-10">
-                  <Badge badgeContent={currentCountdownTime} color="secondary" className='mr-12'>
-                    <AccessTimeFilledIcon color='primary' fontSize='large' />
-                  </Badge>
+                    <Badge badgeContent={currentCountdownTime} color="secondary" className='mr-12'>
+                      <AccessTimeFilledIcon color='primary' fontSize='large' />
+                    </Badge>
                   </div>
                   {/* Title & Buttons */}
                   <div className="flex flex-row justify-evenly mr-20">
                     <div className="flex flex-col justify-center items-center">
-                    <div className="bg-nav-blue text-black py-2 px-4 rounded-lg max-w-[400px] shadow-xl">
-                      <h1 className="mt-[1%] text-md font-medium
+                      <div className="bg-nav-blue text-black py-2 px-4 rounded-lg max-w-[400px] shadow-xl">
+                        <h1 className="mt-[1%] text-md font-medium
                                     lg:mt-0 lg:mb-0 2xl:mt-[2%]">
-                        {title}
-                      </h1>
-                    </div>
+                          {currentQuestionType} : {title}
+                        </h1>
+                      </div>
                       <img
                         className="w-[150px] h-[150px]
                         sm:w-[220px] sm:h-[220px]
@@ -282,7 +305,7 @@ const SessionPlayerPage: React.FC = () => {
                   </div>
                 </div>
                 {/* Answers */}
-                <div className="mx-auto mt-[20px] lg:mt-[30px]">
+                <div className="mx-auto mt-[60px] lg:mt-[80px]">
                   <Grid
                     container
                     spacing={{ xs: 2, sm: 3, md: 4, lg: 5, xl: 6, xxl: 6 }}
@@ -310,6 +333,17 @@ const SessionPlayerPage: React.FC = () => {
                       );
                     })}
                   </Grid>
+                  <div className="flex justify-center mt-16">
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="large"
+                      onClick={handleSubmit}
+                      disabled={isSubmitted}
+                    >
+                      Submit Answer
+                    </Button>
+                  </div>
                 </div>
               </div>
             </>
@@ -319,19 +353,19 @@ const SessionPlayerPage: React.FC = () => {
               <div className="bg-sky-100 w-screen flex flex-col md:mt-24 lg:mt-24 xl:mt-32">
                 <div className="flex flex-row justify-center items-center">
                   <div className="flex flex-col items-center py-4 mt-10">
-                  <Badge badgeContent={currentCountdownTime} color="secondary" className='mr-12'>
-                    <AccessTimeFilledIcon color='primary' fontSize='large' />
-                  </Badge>
+                    <Badge badgeContent={currentCountdownTime} color="secondary" className='mr-12'>
+                      <AccessTimeFilledIcon color='primary' fontSize='large' />
+                    </Badge>
                   </div>
                   {/* Title & Buttons */}
                   <div className="flex flex-row justify-evenly mr-20">
                     <div className="flex flex-col justify-center items-center">
-                    <div className="bg-nav-blue text-black py-2 px-4 rounded-lg max-w-[400px]">
-                      <h1 className="mt-[1%] text-md font-medium
+                      <div className="bg-nav-blue text-black py-2 px-4 rounded-lg max-w-[400px]">
+                        <h1 className="mt-[1%] text-md font-medium
                                     lg:mt-0 lg:mb-0 2xl:mt-[2%]">
-                        {title}
-                      </h1>
-                    </div>
+                          {currentQuestionType} : {title}
+                        </h1>
+                      </div>
                       <img
                         className="md:w-[220px] md:h-[220px]
                         object-cover rounded-lg mt-4"
@@ -369,15 +403,26 @@ const SessionPlayerPage: React.FC = () => {
                       );
                     })}
                   </Grid>
+                  <div className="flex justify-center mt-16">
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      size="large"
+                      onClick={handleSubmit}
+                      disabled={isSubmitted}
+                    >
+                      Submit Answer
+                    </Button>
+                  </div>
                 </div>
               </div>
             </>
           ))
         )}
-      {/* showResultPage */}
-      {showResultPage && (
-        <SessionPlayerResultPage playerId={playerId} pointsList={pointsList} questionIdList={questionIdList} />
-      )}
+        {/* showResultPage */}
+        {showResultPage && (
+          <SessionPlayerResultPage playerId={playerId} pointsList={pointsList} questionIdList={questionIdList} />
+        )}
       </div>
     </>
   );
