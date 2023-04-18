@@ -114,6 +114,7 @@ const LoginPage: React.FC = () => {
                   email={email}
                   password={password}
                   innerText="Login"
+                  data-cy="login-button"
                 />
               </form>
               <AuthNavigator
