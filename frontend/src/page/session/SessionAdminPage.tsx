@@ -203,6 +203,7 @@ const SessionAdminPage: React.FC = () => {
                 color="primary"
                 startIcon={<PlayArrow />}
                 onClick={handleAdvance}
+                disabled={players.length === 0}
               >
                 Start Quiz
               </Button>
