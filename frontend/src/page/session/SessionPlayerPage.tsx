@@ -409,7 +409,9 @@ const SessionPlayerPage: React.FC = () => {
         )}
         {/* showResultPage */}
         {showResultPage && (
-          <SessionPlayerResultPage playerId={playerId} pointsList={pointsList} questionIdList={questionIdList} />
+          <div className='mt-[100px]'>
+            <SessionPlayerResultPage playerId={playerId} pointsList={pointsList} questionIdList={questionIdList} />
+          </div>
         )}
       </div>
     </>
