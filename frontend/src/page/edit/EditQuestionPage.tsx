@@ -73,7 +73,7 @@ const EditQuestionPage: React.FC<{ qId: string; gameId: string }> = ({
   const points = new Map([
     ['100 points', '100'],
     ['200 points', '200'],
-    ['500 points', '300'],
+    ['500 points', '500'],
   ]);
 
   const toggleDrawer =
