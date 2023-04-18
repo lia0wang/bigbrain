@@ -8,10 +8,11 @@ import Navbar from '../../component/dashboard/Navbar';
 import { POLLING_INTERVAL } from '../../config';
 import { isMobileWidth, isDesktopWidth } from '../../util/media';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
+import SessionPlayerResultPage from './SessionPlayerResultPage';
 
 const SessionPlayerPage: React.FC = () => {
   const { sessionId } = useParams();
-  // if questionId is defined, return GameQuestionEditPage
+  // if sessionId is defined, return GameQuestionEditPage
   if (!sessionId) {
     return <NotFoundPage />;
   }
@@ -37,6 +38,9 @@ const SessionPlayerPage: React.FC = () => {
   const [correctAnswerIds, setCorrectAnswerIds] = useState([]);
   const [questionNo, setQuestionNo] = useState(-1); // -1 is waiting lobby, 0 is the first question
   const [questionId, setQuestionId] = useState(null);
+  const [showResultPage, setShowResultPage] = useState(false);
+  const [pointsList, setPointsList] = useState([]);
+  const [questionIdList, setQuestionIdList] = useState([]);
 
   let colorIndex = 0;
 
@@ -143,12 +147,6 @@ const SessionPlayerPage: React.FC = () => {
   }, []);
 
   const fetchCorrectAnswers = async () => {
-    // resp = [
-    // {
-    //   "answerIds": [
-    //     0
-    //   ]
-    // }
     console.log('fetching correct answers');
     if (playerId) {
       console.log('playerId:', playerId);
@@ -159,17 +157,22 @@ const SessionPlayerPage: React.FC = () => {
   };
 
   const fetchCurrentQuestion = async () => { // TODO: when response is return 400, clear interval and display results page
-    if (playerId) {
-      const response = await apiRequest('GET', `/play/${playerId}/question`);
+    const response = await apiRequest('GET', `/play/${playerId}/question`);
+    console.log('response:', response);
+    if (playerId && !response.error) {
       setCurrentQuestion(response.question.question);
       // console.log('response.question.question:', response.question.question);
       setQuestionId(response.question.question.id);
       if (response.question.question.timeLimit && response.question.isoTimeLastQuestionStarted) {
         // calculate current time minus "isoTimeLastQuestionStarted": "2020-10-31T14:45:21.077Z"
-        const remainingTime = Math.floor(response.question.question.timeLimit - (Date.now() - new Date(response.question.isoTimeLastQuestionStarted).getTime()) / 1000);
+        const remainingTime = Math.ceil(response.question.question.timeLimit - (Date.now() - new Date(response.question.isoTimeLastQuestionStarted).getTime()) / 1000);
         // console.log('remainingTime:', remainingTime);
         setCurrentCountdownTime(remainingTime);
       }
+    } else {
+      console.log('response.error:', response.error);
+      clearInterval(pollQuestionIntervalId);
+      setShowResultPage(true);
     }
   };
 
@@ -179,6 +182,8 @@ const SessionPlayerPage: React.FC = () => {
       setMedia(currentQuestion.media);
       setAnswers(currentQuestion.answers);
       setPoint(currentQuestion.point);
+      setPointsList(pointsList => [...pointsList, currentQuestion.point]);
+      setQuestionIdList(questionIdList => [...questionIdList, currentQuestion.id]);
       if (questionNo >= 1) { // fetch correct answers after the first question has finished
         fetchCorrectAnswers();
       }
@@ -242,7 +247,7 @@ const SessionPlayerPage: React.FC = () => {
             </Box>
           </Container>
         )}
-        {playerId && isGameStarted && (
+        {playerId && isGameStarted && !showResultPage && (
           (deviceType === 'mobile' && (
             <>
               <div className="bg-sky-100 w-screen flex flex-col mt-24 md:mt-24 lg:mt-24">
@@ -363,6 +368,10 @@ const SessionPlayerPage: React.FC = () => {
             </>
           ))
         )}
+      {/* showResultPage */}
+      {showResultPage && (
+        <SessionPlayerResultPage playerId={playerId} pointsList={pointsList} questionIdList={questionIdList} />
+      )}
       </div>
     </>
   );

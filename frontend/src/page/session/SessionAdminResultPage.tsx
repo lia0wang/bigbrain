@@ -8,6 +8,9 @@ const SessionAdminResultPage: React.FC = () => {
 
   return (
     <>
+        <div className="bg-sky-100 w-screen flex flex-col mt-24 md:mt-24 lg:mt-24">
+          <p className="text-2xl font-bold">Admin Results</p>
+        </div>
     </>
   );
 }

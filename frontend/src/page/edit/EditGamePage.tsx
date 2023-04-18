@@ -13,6 +13,7 @@ interface Answer {
   content: string;
   isCorrect: boolean;
 }
+
 interface Question {
   id: string;
   title: string;
