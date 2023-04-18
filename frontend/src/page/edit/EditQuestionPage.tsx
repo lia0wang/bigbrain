@@ -251,8 +251,8 @@ const EditQuestionPage: React.FC<{ qId: string; gameId: string }> = ({
             <div className="flex flex-row justify-evenly mt-[-40px]">
               <div className="flex flex-col justify-center items-center">
                 <TextField
-                  className="w-[250px]"
                   multiline
+                  className="w-[250px]"
                   size="small"
                   type="text"
                   value={title}
@@ -272,6 +272,19 @@ const EditQuestionPage: React.FC<{ qId: string; gameId: string }> = ({
                     <input type="file" hidden onChange={handleMediaChange} />
                   </Button>
                 </div>
+                <div className="mt-2">
+                    <TextField
+                      className="w-[250px]"
+                      size="small"
+                      type="text"
+                      value={media}
+                      onChange={handleMediaChange}
+                      placeholder="Enter YouTube/Photo URL"
+                      label="Media URL"
+                      color="secondary"
+                      focused
+                    />
+                  </div>
               </div>
               <div className="flex flex-col justify-evenly items-center py-4 mt-10">
                 <ButtonGreen text="Add" onClick={() => addAnswerHandler()} />
@@ -327,6 +340,7 @@ const EditQuestionPage: React.FC<{ qId: string; gameId: string }> = ({
               <div className="flex flex-row justify-evenly">
                 <div className="flex flex-col justify-center items-center">
                   <TextField
+                    multiline
                     type="text"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
@@ -345,6 +359,19 @@ const EditQuestionPage: React.FC<{ qId: string; gameId: string }> = ({
                       Upload Media
                       <input type="file" hidden onChange={handleMediaChange} />
                     </Button>
+                  </div>
+                  <div className="mt-2">
+                    <TextField
+                      className="w-[250px]"
+                      size="small"
+                      type="text"
+                      value={media}
+                      onChange={handleMediaChange}
+                      placeholder="Enter YouTube/Photo URL"
+                      label="Media URL"
+                      color="secondary"
+                      focused
+                    />
                   </div>
                 </div>
                 <div className="flex flex-col justify-evenly items-center py-4 mt-10">
