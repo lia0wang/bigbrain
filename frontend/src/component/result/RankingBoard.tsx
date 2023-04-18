@@ -72,7 +72,7 @@ const RankingBoard: React.FC<{
     return <h1>No players</h1>;
   }
 
-  const totalPoints = adminResult.map(player => {
+  const getPlayerToPointMap = adminResult.map(player => {
     const point = player.answers.reduce((acc, ans, i) => {
       const question = questionList[i];
       const isCorrect = ans.correct;
@@ -83,8 +83,8 @@ const RankingBoard: React.FC<{
   });
 
   const sortedPlayers = reverse
-    ? totalPoints.sort((a, b) => a.point - b.point)
-    : totalPoints.sort((a, b) => b.point - a.point);
+    ? getPlayerToPointMap.sort((a, b) => a.point - b.point)
+    : getPlayerToPointMap.sort((a, b) => b.point - a.point);
 
   return (
     <>
