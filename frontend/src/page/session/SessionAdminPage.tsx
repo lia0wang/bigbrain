@@ -12,6 +12,7 @@ import Badge from '@mui/material/Badge';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
 import SessionAdminResultPage from '../result/SessionAdminResultPage';
 import ViewResultModal from '../../modal/ViewResultModal';
+import MediaComponent from 'component/MediaComponent';
 
 const SessionAdminPage: React.FC = () => {
   const { sessionId } = useParams();
@@ -252,12 +253,7 @@ const SessionAdminPage: React.FC = () => {
                         {title}
                       </h1>
                     </div>
-                    <img
-                      className="w-[150px] h-[150px]
-                      sm:w-[220px] sm:h-[220px]
-                      object-cover rounded-lg mt-4"
-                      src={media} // TODO: Add video support
-                    />
+                    <MediaComponent media={media} />
                   </div>
                 </div>
                 <div className="flex flex-col items-center py-4 mt-10">
@@ -334,11 +330,7 @@ const SessionAdminPage: React.FC = () => {
                         {title}
                       </h1>
                     </div>
-                    <img
-                      className="md:w-[220px] md:h-[220px]
-                      object-cover rounded-lg mt-4"
-                      src={media} // TODO: Add video support
-                    />
+                    <MediaComponent media={media} />
                   </div>
                 </div>
                 <div className="flex flex-col items-center py-4 mt-10 gap-4">

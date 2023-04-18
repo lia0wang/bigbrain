@@ -16,6 +16,7 @@ import AuthErrorPopup from '../../component/auth/AuthErrorPopup';
 import { Button, Drawer, Fab, TextField } from '@mui/material';
 import { fileToDataUrl } from '../../util/imageHandler';
 import AddIcon from '@mui/icons-material/Add';
+import MediaComponent from 'component/MediaComponent';
 
 interface Answer {
   id: string;
@@ -262,10 +263,7 @@ const EditQuestionPage: React.FC<{ qId: string; gameId: string }> = ({
                   color="secondary"
                   focused
                 />
-                <img
-                  className="w-[150px] h-[150px] object-cover rounded-[10px] mt-4"
-                  src={media} // TODO: Add video support
-                />
+                <MediaComponent media={media} />
                 <div className="mt-2">
                   <Button variant="contained" component="label" size="small">
                     Upload Media
@@ -349,11 +347,7 @@ const EditQuestionPage: React.FC<{ qId: string; gameId: string }> = ({
                     color="secondary"
                     focused
                   />
-                  <img
-                    className="md:w-[220px] md:h-[220px]
-                    object-cover rounded-[10px] mt-4"
-                    src={media} // TODO: Add video support
-                  />
+                  <MediaComponent media={media} />
                   <div className="mt-4">
                     <Button variant="contained" component="label">
                       Upload Media

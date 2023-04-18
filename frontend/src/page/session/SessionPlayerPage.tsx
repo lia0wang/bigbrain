@@ -9,6 +9,7 @@ import { POLLING_INTERVAL } from '../../config';
 import { isMobileWidth, isDesktopWidth } from '../../util/media';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
 import SessionPlayerResultPage from '../result/SessionPlayerResultPage';
+import MediaComponent from 'component/MediaComponent';
 
 const SessionPlayerPage: React.FC = () => {
   const { sessionId } = useParams();
@@ -283,12 +284,7 @@ const SessionPlayerPage: React.FC = () => {
                           {currentQuestionType} : {title}
                         </h1>
                       </div>
-                      <img
-                        className="w-[150px] h-[150px]
-                        sm:w-[220px] sm:h-[220px]
-                        object-cover rounded-lg mt-4"
-                        src={media} // TODO: Add video support
-                      />
+                      <MediaComponent media={media} />
                     </div>
                   </div>
                 </div>
@@ -354,11 +350,7 @@ const SessionPlayerPage: React.FC = () => {
                           {currentQuestionType} : {title}
                         </h1>
                       </div>
-                      <img
-                        className="md:w-[220px] md:h-[220px]
-                        object-cover rounded-lg mt-4"
-                        src={media} // TODO: Add video support
-                      />
+                      <MediaComponent media={media} />
                     </div>
                   </div>
                 </div>
