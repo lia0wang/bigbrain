@@ -1,0 +1,11 @@
+# Attempts
+
+- We made our UI to follow the UI/UX principle that users aren't scared when using our design. We did this by following the basic visual design principles. We chose and used one consistent font Montserrat across every page to provide users the consistent experience and reduce confusion.
+
+- We made sure our components are aligned and spaced evenly by using flex and grid to provide give a consistent patterns in the UI. E.g. the dashboard pages' game cards are aligned and spaced evenly and adjust to both desktop and mobile view. The answers in game sessions are aligned and spaced evenly as well.
+
+- We used simple color scheme to provide a consistent experience and reduce confusion, and we followed the common color scheme for the buttons. E.g. for stopping a session and delete a game, we used the red color for the buttons to indicate the danger of the action, and we have consistently used blue as our theme color for background and buttons. The background we have exquisitely chosen to be a light blue Tailwind bg-sky-100 to provide a relaxing and comfortable experience for users, and the background color we have used consistently across all pages.
+
+- We made our best effort to provide affordances for users to understand the purpose of the buttons and the actions they can take. E.g. the buttons are all explicitly labeled with the action they will perform (create, close, delete, create game from JSON, etc.), and the buttons are all colored to indicate the danger of the action (red for delete and stop, blue for create, yellow for go to session and page redirection). All hovering on the buttons will also provide a visual feedback to users to indicate the action they will perform by changing the color of the button and the cursor. There is no confusion for users to understand the purpose of the buttons and the actions they can take.
+
+- We have made the navigation bar sticky to the top of the page to provide a consistent experience for users. The navigation bar is always visible to users and they can easily navigate to the main page by clicking our consistent logo. The navigation bar is also responsive to the screen size and will adjust to both desktop and mobile view.
