@@ -39,7 +39,6 @@ const SessionAdminResultPage: React.FC<{
 
   useEffect(() => {
     const fetchAdminResult = async () => {
-      console.log('fetching admin result');
       const response = await apiRequest('GET', `/admin/session/${sessionId}/results`);
       if (response.error) {
         return;

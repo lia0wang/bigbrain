@@ -63,7 +63,6 @@ const ResponseTimeChart: React.FC<{
   const labels = Array.from(map.keys());
   const data = Array.from(map.values());
 
-  console.log(map);
   return (
     <>
         <ResultLineChart labelArray={labels} dataArray={data} labelName="Time (s)" title="Avg. Response Time" />

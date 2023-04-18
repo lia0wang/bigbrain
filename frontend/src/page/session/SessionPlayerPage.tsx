@@ -62,9 +62,7 @@ const SessionPlayerPage: React.FC = () => {
   const handleSubmit = async () => {
     if (currentAnswerIds.size > 0) {
       // submit the answer
-      console.log(currentAnswerIds);
       const currentAnswerIdsArray = Array.from(currentAnswerIds);
-      console.log(currentAnswerIdsArray);
       await apiRequest('PUT', `/play/${playerId}/answer`, { answerIds: currentAnswerIdsArray });
       if (correctAnswerIds.includes(currentAnswerIds)) {
         setUserScore(userScore + point);
@@ -171,26 +169,20 @@ const SessionPlayerPage: React.FC = () => {
   }, []);
 
   const fetchCorrectAnswers = async () => {
-    console.log('fetching correct answers');
     if (playerId) {
-      console.log('playerId:', playerId);
       const response = await apiRequest('GET', `/play/${playerId}/answer`);
-      console.log('response:', response.answerIds);
       setCorrectAnswerIds(response.answerIds);
     }
   };
 
   const fetchCurrentQuestion = async () => {
     const response = await apiRequest('GET', `/play/${playerId}/question`);
-    // console.log('response:', response);
     if (playerId && !response.error) {
       setCurrentQuestion(response.question.question);
-      // console.log('response.question.question:', response.question.question);
       setQuestionId(response.question.question.id);
       if (response.question.question.timeLimit && response.question.isoTimeLastQuestionStarted) {
         // calculate current time minus "isoTimeLastQuestionStarted": "2020-10-31T14:45:21.077Z"
         const remainingTime = Math.ceil(response.question.question.timeLimit - (Date.now() - new Date(response.question.isoTimeLastQuestionStarted).getTime()) / 1000);
-        // console.log('remainingTime:', remainingTime);
         if (remainingTime > 0) {
           setCurrentCountdownTime(remainingTime);
         } else if (remainingTime === 0) {
@@ -206,7 +198,6 @@ const SessionPlayerPage: React.FC = () => {
 
   useEffect(() => {
     if (playerId) {
-      console.log('playerId:', playerId);
       setTitle(currentQuestion.title);
       setMedia(currentQuestion.media);
       setAnswers(currentQuestion.answers);
@@ -217,7 +208,6 @@ const SessionPlayerPage: React.FC = () => {
       setIsSubmitted(false);
     }
     setQuestionNo(questionNo + 1);
-    console.log('questionNo:', questionNo);
   }, [questionId]); // every time currentQuestion changes, update the state, fetch correct answers
 
   useEffect(() => {

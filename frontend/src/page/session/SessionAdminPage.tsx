@@ -398,7 +398,6 @@ const SessionAdminPage: React.FC = () => {
       )}
 
       {showResultPage && (
-        console.log(showResultPage),
         <>
           < SessionAdminResultPage sessionId={sessionId} questionList={questionList} />
         </>

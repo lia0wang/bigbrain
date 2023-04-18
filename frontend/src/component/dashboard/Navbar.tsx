@@ -26,8 +26,6 @@ const Navbar: React.FC<{
   const createGame = async (gameData: JSON) => {
     const resp = await apiRequest('POST', '/admin/quiz/new', gameData);
     // if gameData has other fields than name, we call update
-    console.log(gameData);
-    console.log(Object.keys(gameData).length);
     if (Object.keys(gameData).length > 1) {
       await apiRequest('PUT', `/admin/quiz/${resp.quizId}`, gameData);
     }

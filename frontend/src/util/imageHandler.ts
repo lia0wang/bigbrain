@@ -9,7 +9,6 @@
  *
  * Example Usage:
  *   const file = document.querySelector('input[type="file"]').files[0];
- *   console.log(fileToDataUrl(file));
  * @param {File} file The file to be read.
  * @return {Promise<string>} Promise which resolves to the file as a data url.
  */

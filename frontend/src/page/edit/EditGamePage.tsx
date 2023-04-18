@@ -114,7 +114,6 @@ const EditGamePage: React.FC = () => {
   };
 
   const saveChanges = () => {
-    console.log('Save changes');
     resp.name = modifiedGameName;
     resp.thumbnail = gameThumbnail;
     setResp({ ...resp });
@@ -139,7 +138,6 @@ const EditGamePage: React.FC = () => {
   };
 
   const updateGameByJSON = async () => {
-    console.log(gameData);
     if (gameData) {
       resp.name = gameData.name;
       resp.thumbnail = gameData.thumbnail;
@@ -150,16 +148,12 @@ const EditGamePage: React.FC = () => {
         ...resp
       });
 
-      console.log(gameData.questions);
-      console.log(gameData.thumbnail);
-
       resp.questions = gameData.questions;
       const requestBody = {
         name: gameData.name,
         thumbnail: gameData.thumbnail,
         ...resp
       };
-      console.log(requestBody);
       await apiRequest('PUT', `/admin/quiz/${gameId}`, requestBody);
       setResp({ ...resp });
       setGameName(gameData.name);
