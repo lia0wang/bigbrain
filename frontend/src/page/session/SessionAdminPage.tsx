@@ -16,7 +16,7 @@ import ViewResultModal from '../../modal/ViewResultModal';
 const SessionAdminPage: React.FC = () => {
   const { sessionId } = useParams();
   const location = useLocation();
-  const { quizId, gameTitle } = location.state || { quizId: null, gameTitle: null };
+  const { quizId, gameTitle, viewResults } = location.state || { quizId: null, gameTitle: null };
 
   const [players, setPlayers] = useState([]);
   const [showWaitingPage, setShowWaitingPage] = useState(true);
@@ -91,6 +91,11 @@ const SessionAdminPage: React.FC = () => {
       setShowQuestionPage(true);
       setShowResultPage(false);
     } else if (position && totalQuestion && position === totalQuestion) { // results page
+      setShowWaitingPage(false);
+      setShowQuestionPage(false);
+      setShowResultPage(true);
+    }
+    if (viewResults) {
       setShowWaitingPage(false);
       setShowQuestionPage(false);
       setShowResultPage(true);

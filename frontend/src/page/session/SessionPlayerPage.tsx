@@ -41,7 +41,6 @@ const SessionPlayerPage: React.FC = () => {
   const [showResultPage, setShowResultPage] = useState(false);
   const [pointsList, setPointsList] = useState([]);
   const [questionIdList, setQuestionIdList] = useState([]);
-  // const [selectedAnswerIds, setSelectedAnswerIds] = useState(null);
   const [currentQuestionType, setCurrentQuestionType] = useState(null);
   const [currentAnswerIds, setCurrentAnswerIds] = useState(new Set<string>());
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -200,7 +199,6 @@ const SessionPlayerPage: React.FC = () => {
         }
       }
     } else {
-      console.log('response.error:', response.error);
       clearInterval(pollQuestionIntervalId);
       setShowResultPage(true);
     }

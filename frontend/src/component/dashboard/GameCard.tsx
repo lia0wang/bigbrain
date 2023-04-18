@@ -9,6 +9,7 @@ import apiRequest from '../../util/api';
 import { useNavigate } from 'react-router-dom';
 import RedButton from './ButtonRed';
 import NewGameModal from '../../modal/NewSessionModal';
+import HistorySessionModal from 'modal/HistoryModal';
 
 const GameCard: React.FC<{
   title: string;
@@ -27,6 +28,8 @@ const GameCard: React.FC<{
   const [isGameStarted, setIsGameStarted] = useState(false);
   const [showNewGameModal, setShowNewGameModal] = useState(false);
   const [sessionId, setSessionId] = useState(null);
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [sessionIds, setSessionIds] = useState([]);
 
   const navigate = useNavigate();
 
@@ -80,6 +83,12 @@ const GameCard: React.FC<{
     setShowNewGameModal(true);
   };
 
+  const handleHistorySessionClick = async () => {
+    const resp = await apiRequest('GET', `/admin/quiz/${id}`);
+    setSessionIds(resp.oldSessions)
+    setShowHistoryModal(true);
+  };
+
   // Default
   if (thumbnail === null) thumbnail = 'https://cdn.dribbble.com/userupload/4487190/file/original-d4c3ba33335a133315f0e2dca0332649.png?compress=1&resize=752x';
   return (
@@ -126,8 +135,15 @@ const GameCard: React.FC<{
         </CardContent>
         {sessionId && (
           <CardContent onClick={handleSessionIdClick} style={{ cursor: 'pointer' }} >
-            <div className="bg-gray-100 p-2 rounded-lg flex justify-center">
-              Session ID: {sessionId}
+            <div className="bg-gray-100 hover:bg-gray-200 p-2 rounded-lg flex justify-center">
+              Ongoing Session ID: {sessionId}
+            </div>
+          </CardContent>
+        )}
+        {(
+          <CardContent onClick={handleHistorySessionClick} style={{ cursor: 'pointer' }} >
+            <div className="bg-gray-100 hover:bg-gray-200 p-2 rounded-lg flex justify-center">
+              View History Sessions
             </div>
           </CardContent>
         )}
@@ -153,6 +169,14 @@ const GameCard: React.FC<{
           onClose={() => setShowNewGameModal(false)}
           sessionId={sessionId}
           quizId={id}
+        />
+      )}
+      {showHistoryModal && (
+        <HistorySessionModal
+          quizId={id}
+          gameTitle={title}
+          sessionIds={sessionIds}
+          onClose={() => setShowHistoryModal(false)}
         />
       )}
       </>
