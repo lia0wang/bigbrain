@@ -116,7 +116,6 @@ const SessionAdminPage: React.FC = () => {
         setShowQuestionPage(false);
       } else {
         setQuestionNo(position + 1);
-        setCurrentQuestion(questionList[position]);
         setTitle(questionList[position].question.title);
         setMedia(questionList[position].question.media);
         setAnswers(questionList[position].question.answers);

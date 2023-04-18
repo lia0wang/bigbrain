@@ -13,4 +13,5 @@
 - The admin is also able to stop a session on dashboard page, and the session will be stopped immediately and the users will be redirected to the home page, this makes the management of the session more convenient, and with the ability to return to the session admin page correctly, the admin can run and manage multiple sessions at the same time easily.
 
 - On player session page, single and multiple choice questions will have different UI effect, the answer button will response differently when the user when use clicks it. On single choice question, the answer button will be highlighted when the user clicks it, and the any other button that selected will be unselected. On multiple choice question, the answer button will be highlighted when the user clicks it, and the button will be unselected when the user clicks it again. This makes the user experience more intuitive and convenient.
--
+
+- Used up to six different colors for answer buttons on both admin and player session pages with the same answer has the same color, so players can easily identify the answer mapping from the screen of admin session like Kahoot. This makes the user experience more intuitive and convenient.
