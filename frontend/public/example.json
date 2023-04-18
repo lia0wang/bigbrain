@@ -9,7 +9,7 @@
                 "media": "https://previews.123rf.com/images/fordzolo/fordzolo1506/fordzolo150600296/41026708-example-white-stamp-text-on-red-backgroud.jpg",
                 "type": "multi",
                 "timeLimit": 30,
-                "points": 200,
+                "point": 200,
                 "answers": [
                     {
                         "answer": {
@@ -49,7 +49,7 @@
                 "media": "https://i.ytimg.com/vi/F_OCgbYNs_w/hqdefault.jpg",
                 "type": "single",
                 "timeLimit": 40,
-                "points": 100,
+                "point": 100,
                 "answers": [
                     {
                         "answer": {
@@ -75,7 +75,7 @@
                 "media": "https://www.youtube.com/watch?v=F_OCgbYNs_w&ab_channel=happywah",
                 "type": "single",
                 "timeLimit": 40,
-                "points": 100,
+                "point": 100,
                 "answers": [
                     {
                         "answer": {

@@ -11,7 +11,7 @@ import { isMobileWidth, isDesktopWidth } from '../../util/media';
 import Badge from '@mui/material/Badge';
 import ArrowCircleRightIcon from '@mui/icons-material/ArrowCircleRight';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
-import SessionAdminResultPage from './SessionAdminResultPage';
+import SessionAdminResultPage from '../result/SessionAdminResultPage';
 
 const SessionAdminPage: React.FC = () => {
   const { sessionId } = useParams();
@@ -88,7 +88,7 @@ const SessionAdminPage: React.FC = () => {
       setShowWaitingPage(false);
       setShowQuestionPage(true);
       setShowResultPage(false);
-    } else if (position === totalQuestion) { // results page
+    } else if (position && totalQuestion && position === totalQuestion) { // results page
       setShowWaitingPage(false);
       setShowQuestionPage(false);
       setShowResultPage(true);
@@ -349,8 +349,9 @@ const SessionAdminPage: React.FC = () => {
       )}
 
       {showResultPage && (
+        console.log(showResultPage),
         <>
-          < SessionAdminResultPage />
+          < SessionAdminResultPage sessionId={sessionId} questionList={questionList} />
         </>
       )}
       </div>

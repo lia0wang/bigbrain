@@ -5,13 +5,14 @@ interface Answer {
   content: string;
   isCorrect: boolean;
 }
+
 interface Question {
   id: string;
   title: string;
   media: string;
   type: 'single' | 'multi';
   timeLimit: number;
-  points: number;
+  point: number;
   answers: Array<{ answer: Answer }>;
 }
 
@@ -67,7 +68,7 @@ const CreateModal: React.FC<CreateModalProps> = ({ onClose, onConfirm }) => {
 
     for (const questionObj of gameData.questions) {
       const question = questionObj.question;
-      if (!question.id || !question.title || !question.media || !question.type || !question.timeLimit || !question.points || !question.answers) {
+      if (!question.id || !question.title || !question.media || !question.type || !question.timeLimit || !question.point || !question.answers) {
         alert(`JSON file is missing a required field in question with ID: ${question.id}`);
         return false;
       }

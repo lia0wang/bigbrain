@@ -8,7 +8,7 @@ import Navbar from '../../component/dashboard/Navbar';
 import { POLLING_INTERVAL } from '../../config';
 import { isMobileWidth, isDesktopWidth } from '../../util/media';
 import AccessTimeFilledIcon from '@mui/icons-material/AccessTimeFilled';
-import SessionPlayerResultPage from './SessionPlayerResultPage';
+import SessionPlayerResultPage from '../result/SessionPlayerResultPage';
 
 const SessionPlayerPage: React.FC = () => {
   const { sessionId } = useParams();
