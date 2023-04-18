@@ -46,13 +46,13 @@ const DashboardPage: React.FC = () => {
               columnSpacing={{ xs: 2, sm: 3, md: 4, lg: 5, xl: 6, xxl: 6 }}
               className="flex flex-row justify-start"
             >
-              {gameList
+              {gameList && (gameList
                 .sort((gameA, gameB) => new Date(gameB.createdAt).getTime() - new Date(gameA.createdAt).getTime())
                 .map((game, index) => (
                   <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
                     <GameCard title={game.name} thumbnail={game.thumbnail} id={game.id} active={game.active}/>
                   </Grid>
-                ))}
+                )))}
             </Grid>
           </Box>
         </div>
