@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { styled } from '@mui/material/styles';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -8,32 +8,6 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import LoadingPage from '../../page/LoadingPage';
-
-interface Answer {
-    id: string;
-    content: string;
-    isCorrect: boolean;
-  }
-
-interface Question {
-    id: string;
-    title: string;
-    media: string;
-    type: 'single' | 'multi';
-    timeLimit: number;
-    point: number;
-    answers: Array<{ answer: Answer }>;
-}
-
-interface UserAnswer {
-    name: string;
-    answers: {
-      questionStartedAt: Date | null;
-      answeredAt: Date | null;
-      answerIds: string[];
-      correct: boolean;
-    }[];
-}
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -55,9 +29,35 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
+interface Answer {
+  id: string;
+  content: string;
+  isCorrect: boolean;
+}
+
+interface Question {
+  id: string;
+  title: string;
+  media: string;
+  type: 'single' | 'multi';
+  timeLimit: number;
+  point: number;
+  answers: Array<{ answer: Answer }>;
+}
+
+interface UserAnswer {
+  name: string;
+  answers: {
+    questionStartedAt: Date | null;
+    answeredAt: Date | null;
+    answerIds: string[];
+    correct: boolean;
+  }[];
+}
+
 const RankingBoard: React.FC<{
     adminResult: UserAnswer[],
-    questionList: Question[],
+    questionList: Array<{ question: Question }>,
     reverse: boolean,
 }> = ({
   adminResult,
@@ -76,7 +76,7 @@ const RankingBoard: React.FC<{
     const point = player.answers.reduce((acc, ans, i) => {
       const question = questionList[i];
       const isCorrect = ans.correct;
-      const point = question.point;
+      const point = question.question.point;
       return isCorrect ? acc + point : acc;
     }, 0);
     return { name: player.name, point };

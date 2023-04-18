@@ -25,7 +25,7 @@ interface Question {
 
 const SessionAdminResultPage: React.FC<{
   sessionId: string,
-  questionList: Question[],
+  questionList: Array<{ question: Question }>,
 }> = ({
   sessionId,
   questionList
