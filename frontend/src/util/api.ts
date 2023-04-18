@@ -6,6 +6,7 @@ const API_PATH = `http://localhost:${BACKEND_PORT}`;
 export interface ApiResponse {
   ok: boolean;
   error?: string; // ? means optional
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any; // [key: string] means any key can be used
 }
 
