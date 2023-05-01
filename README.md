@@ -1,3 +1,4 @@
+# Marks: (100/100)
 # Assessment 4 - ReactJS: BigBrain
 
 1. Background & Motivation
